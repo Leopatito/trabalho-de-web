@@ -31,13 +31,15 @@ export class Login {
     this.loading = true;
 
     this.authService.login(this.email, this.password).subscribe({
-      next: (user) => {
+      next: (res) => {
         this.loading = false;
-        if (user?.token) {
+        // prefer token from response, otherwise read stored token from AuthService side-effect
+        const token = res?.token ?? res?.token ?? localStorage.getItem('token');
+        if (token) {
           if (this.remember) {
-            localStorage.setItem('token', user.token);
+            localStorage.setItem('token', token);
           } else {
-            sessionStorage.setItem('token', user.token);
+            sessionStorage.setItem('token', token);
           }
           this.router.navigate(['/dashboard']);
         } else {

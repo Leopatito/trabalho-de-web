@@ -1,0 +1,109 @@
+<div class = "auth_register">
+
+  <section class = "auth_card">
+
+    <!--/*Teste de CSS*/-->
+    <style>
+
+      .form_data
+      {
+        margin-bottom: 20px;
+      }
+
+      fieldset
+      {
+        width: 620px;
+        margin-bottom: 30px;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #000000;
+      }
+
+      .form_router
+      {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+      }
+
+    </style>
+    <!--/*Teste de CSS*/-->
+
+    <header class = "auth_header">
+      <h1>Cadastro de Usuário</h1>
+
+      <p>Preencha os dados abaixo para criar sua conta.</p>
+    </header>
+
+    <form class = "aut_form">
+
+      <fieldset>
+        <legend>Informações Pessoais</legend>
+
+        <div class = "form_data">
+        
+          <label for = "name">Nome completo: </label>
+          <input id = "name" type = "text" placeholder = "Ex: João da Silva" required/>
+          
+          <small class = "error">
+            O nome é obrigatório e deve ter pelo menos 3 caracteres.
+          </small>
+        
+        </div>
+
+        <div class = "form_group">
+          
+          <label for = "email">E-mail: </label>
+          <input id = "email" type = "email" placeholder = "email@email.com" required/>
+          
+          <small class = "error">
+            Digite um e-mail válido. 
+          </small>
+        
+        </div>
+
+      </fieldset>
+
+      <fieldset>
+        <legend>Segurança</legend>
+
+        <div class="form_data">
+
+          <label for = "password">Senha: </label>
+          <input id = "password" type="password" placeholder="********" required/>
+
+          <small class = "error">
+            A senha deve ter no mínimo 6 caracteres.
+          </small>
+
+        </div>
+
+        <div class="form_data">
+
+          <label for = "confirmPassword">Confirmar Senha:</label>
+          <input id = "confirmPassword" type="password" placeholder="********" required/>
+          
+          <small class = "error">
+            As senhas não coincidem.  
+          </small>
+        
+        </div>
+
+      </fieldset>
+
+    <footer class = "form_router">
+      
+      <button type = "submit" class = "button">
+        Cadastrar
+      </button>
+
+      <a routerLink = "/login" class = "link"> Já tenho conta </a>
+
+    </footer>
+
+    </form>
+
+  </section>
+
+</div>
+

@@ -22,7 +22,7 @@ export class AuthService {
             // Save whole response
             localStorage.setItem('auth', JSON.stringify(res));
             // Save token if present (support access_token or token)
-            const token = res?.token ?? res?.token ?? null;
+            const token = res?.access_token;
             if (token) {
               localStorage.setItem('token', token);
             }

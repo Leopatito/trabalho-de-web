@@ -34,7 +34,7 @@ export class Login {
       next: (res) => {
         this.loading = false;
         // prefer token from response, otherwise read stored token from AuthService side-effect
-        const token = res?.token ?? res?.token ?? localStorage.getItem('token');
+        const token = res?.access_token ?? localStorage.getItem('token');
         if (token) {
           if (this.remember) {
             localStorage.setItem('token', token);

@@ -1,13 +1,21 @@
 
 
 <main class="container">
-  <form>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
     <h1>Login de Usuario</h1>
     <div class="inputBox">
-      <input placeholder="email" type="email">
+      <input placeholder="email" type="email" formControlName="email">
+      <small class="error" *ngIf="email?.touched && email?.invalid">
+        <span *ngIf="email?.errors?.['required']">Email é obrigatório.</span>
+        <span *ngIf="email?.errors?.['email']">Email inválido.</span>
+      </small>
     </div>
     <div class="inputBox">
-      <input placeholder="senha" type="password">
+      <input placeholder="senha" type="password" formControlName="password">
+      <small class="error" *ngIf="password?.touched && password?.invalid">
+        <span *ngIf="password?.errors?.['required']">Senha é obrigatória.</span>
+        <span *ngIf="password?.errors?.['minlength']">A senha precisa ter pelo menos 6 caracteres.</span>
+      </small>
     </div>
 <!--
     <div class="remember-forgot">
@@ -18,7 +26,7 @@
       <a href="#">Esqueci a senha</a>
     </div>
 -->
-    <button type="submit" class="button-login">Login</button>
+  <button type="submit" class="button-login" [disabled]="loginForm.invalid">Login</button>
 
     <div class="register-link">
       <p>Não tem uma conta? <a href="#">Cadastre-se</a></p>

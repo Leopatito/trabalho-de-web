@@ -1,0 +1,89 @@
+<div class="auth_register">
+
+  <head>
+      <link rel = "stylesheet" href = "css/register.css">
+  </head>
+
+  <section class = "auth_card">
+
+    <header class = "auth_header">
+      
+      <div class = "top_bar"></div>
+
+      <h1>Cadastro de Usuário</h1>
+
+      <p>Preencha os dados abaixo para criar sua conta.</p>
+
+    </header>
+
+    <form class = "aut_form">
+
+      <fieldset>
+        <legend>Informações Pessoais</legend>
+
+        <div class = "form_data">
+        
+          <label for = "name">Nome completo: </label>
+          <input id = "name" type = "text" placeholder = "Ex: João da Silva" required/>
+          
+          <span class="info" data-tooltip="O nome é obrigatório e deve ter pelo menos 3 caracteres.">!</span>
+
+        
+        </div>
+
+        <div class = "form-group">
+          
+          <label for = "email">E-mail: </label>
+          <input id = "email" type = "email" placeholder = "email@email.com" required/>
+          
+          <span class="info" data-tooltip="Digite um e-mail válido.">!</span>
+
+        
+        </div>
+
+      </fieldset>
+
+      <fieldset>
+        <legend>Segurança</legend>
+
+        <div class = "form_data">
+
+          <label for = "password">Senha: </label>
+          <input id = "password" type="password" placeholder="********" required/>
+
+          <span class="info" data-tooltip="A senha deve ter no mínimo 6 caracteres.">!</span>
+
+
+        </div>
+
+        <div class = "form_data">
+
+          <label for = "confirmPassword">Confirmar Senha:</label>
+          <input id = "confirmPassword" type="password" placeholder="********" required/>
+          
+          <span class="info" data-tooltip="As senhas não coincidem.">!</span>
+
+        
+        </div>
+
+      </fieldset>
+
+    <footer class = "form_router">
+      
+      <button type = "submit" class = "button">
+        Cadastrar
+      </button>
+
+      <a href="login.html" class="link-login">Já tenho conta</a>
+      <!--<a routerLink = "/login" class = "link"> Já tenho conta </a> $#CONVERSÃO PARA ANGULAR FUTURO$#-->
+
+    </footer>
+
+    </form>
+
+    <div class = "low_bar"></div>
+
+  </section>
+
+</div>
+

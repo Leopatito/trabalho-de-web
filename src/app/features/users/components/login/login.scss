@@ -82,23 +82,48 @@
 //   text-decoration: underline;
 // }
 
-.button-login {
+.button-login,
+button[type="submit"] {
   width: 100%;
-  height: 50px;
-  background-color: #2f456e;
+  height: 52px;
+  background-color: #ffffff;
   border: 2px solid #585858;
   border-radius: 40px;
   cursor: pointer;
   font-size: 16px;
   color: #000;
-  font-weight: 600;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  transition: background-color 180ms ease, border-color 180ms ease, transform 120ms ease;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.04);
 }
 
-.button-login:hover {
-  background-color: #9d9d9d;
-  border: 2px solid #000000;
-  color: #000000;
-  transition: 1s;
+.button-login:focus-visible,
+button[type="submit"]:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(88,136,255,0.12);
+}
+
+.button-login:hover:not([disabled]),
+button[type="submit"]:hover:not([disabled]) {
+  background-color: #e6e6e6;
+  border-color: #444;
+  transform: translateY(-1px);
+}
+
+.button-login:active:not([disabled]),
+button[type="submit"]:active:not([disabled]) {
+  transform: translateY(0);
+}
+
+.button-login[disabled],
+button[type="submit"][disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .register-link {

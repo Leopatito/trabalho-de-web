@@ -1,0 +1,180 @@
+.dashboard-root {
+  padding: 1rem;
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* configurable colors */
+  --heading-color: #ffffff; /* headings, titles */
+  --muted-color: #dddddd;   /* muted text */
+  --card-text-color: #222222; /* text inside cards */
+  color: var(--card-text-color);
+  /* Background image: put your PNG at public/assets/dashboard-bg.png */
+  background-image: url('../features/users/components/login/fundotrab.png');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* prefer scroll attachment to avoid mobile address-bar issues */
+  background-attachment: scroll;
+  width: 100%;
+  /* flexible height: allow the container to grow and avoid forcing exact 100vh
+    which can create visual gaps on mobile browsers when the chrome resizes */
+  min-height: 100vh;
+  height: auto;
+  /* optional dim overlay using a pseudo-element for readability */
+  position: relative;
+  box-sizing: border-box;
+}
+
+.dashboard-root::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* use a subtle vertical gradient overlay so bottom doesn't show a solid dark bar */
+  background: linear-gradient(to bottom, rgba(0,0,0,0.28), rgba(0,0,0,0.08));
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dashboard-root > * {
+  position: relative;
+  z-index: 1;
+}
+
+.filters {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.period-presets label,
+.account-filter label {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--heading-color);
+  margin-bottom: 6px;
+}
+
+.period-buttons { display:flex; gap:0.5rem; flex-wrap:wrap }
+.period-buttons button { padding:6px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color:var(--heading-color); cursor:pointer }
+.period-buttons button.active { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.18) }
+.custom-range { display:flex; gap:8px; align-items:center; margin-top:8px }
+.custom-range input[type="date"] { padding:6px 8px; border-radius:6px; border:1px solid #ddd; background:#fff }
+.custom-range .sep { color: var(--heading-color); }
+.custom-range button { padding:6px 10px; border-radius:6px; border:none; background:#1f8a4e; color:#fff }
+
+.account-filter select {
+  min-width: 200px;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.cards {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  /* ensure inner spacing so items don't touch the viewport edge */
+  padding-right: 1rem;
+  box-sizing: border-box;
+}
+
+.card {
+  background: rgba(255,255,255,0.95);
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 8px;
+  padding: 12px 16px;
+  flex: 0 1 280px; /* don't force full width, allow shrinking */
+  max-width: 320px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  position: relative; /* sits above overlay */
+  z-index: 1;
+  box-sizing: border-box;
+  margin-right: 0.5rem;
+}
+
+.card .label {
+  font-size: 12px;
+  color: var(--card-text-color);
+}
+.card .value { font-size: 18px; font-weight: 600; color: var(--card-text-color) }
+.card .value.income { color: #1f8a4e }
+.card .value.expenses { color: #c82b2b }
+.card .value.negative { color: #c62828 }
+
+.charts { display: flex; gap: 1rem; flex-wrap: wrap }
+.chart-left, .chart-right { flex: 1 1 320px }
+.chart-pie { max-width: 460px; margin-right: 1rem }
+
+.chart-pie canvas, .chart-bar canvas { width: 100% !important; height: 320px !important; display: block; }
+
+.pie-legend { list-style: none; padding: 0; margin-top: 12px }
+.pie-legend li { display:flex; align-items:center; gap: .5rem; margin-bottom:6px }
+.pie-legend .dot { width: 12px; height: 12px; border-radius: 50%; display:inline-block }
+.pie-legend .name { color: var(--heading-color); }
+
+.filters h3, h1, h2, h3 {
+  color: var(--heading-color);
+}
+
+.categories { list-style: none; padding: 0; margin: 0 0 20px 0 }
+.categories li { padding: 6px 0; border-bottom: 1px dashed #eee }
+
+.monthly { width: 100%; border-collapse: collapse }
+.monthly th,
+.monthly td { padding: 8px 12px; border: 1px solid #f0f0f0 }
+.monthly th { background: #fafafa; text-align: left }
+
+.no-data { color: var(--muted-color); padding: 12px; background: rgba(255,255,255,0.03); border-radius: 6px }
+.loading { color: #333; padding: 10px }
+.error { color: #b00020; margin: 12px 0 }
+
+.recent {
+  margin-top: 1.25rem;
+}
+.recent-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px }
+.view-all { color: #cbd5e1; text-decoration: none; font-size: 0.9rem }
+.recent-table { width: 100%; border-collapse: collapse; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
+.recent-table th, .recent-table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); text-align: left; color: var(--heading-color) }
+.recent-table th { font-weight: 600; font-size: 13px }
+.recent-table .amount { text-align: right }
+
+.recent-table tbody tr:hover { background: rgba(255,255,255,0.02) }
+
+@media (max-width: 900px) {
+  .dashboard-root { padding: 12px; }
+  .filters { flex-direction: column; align-items: stretch; gap: 0.5rem }
+  .period-presets, .account-filter { width: 100%; }
+  .period-presets button { width: 100%; padding: 8px 10px; }
+  .account-filter select { min-width: 100%; width: 100%; }
+
+  /* Keep cards in rows, allow two per row on small screens */
+  .cards { flex-direction: row }
+  .card { flex: 1 1 calc(50% - 0.5rem); max-width: calc(90%) }
+  .card .label { font-size: 11px }
+  .card .value { font-size: 16px }
+
+  .chart-left, .chart-right { flex: 1 1 100% }
+  .chart-pie canvas { height: 240px !important }
+  .chart-bar canvas { height: 260px !important }
+
+  .pie-legend { display: flex; flex-direction: column; gap: 6px }
+}
+
+@media (max-width: 420px) {
+  /* On very small devices, allow cards to be full width for readability */
+  .cards { gap: 0.6rem }
+  .card { flex: 1 1 100%; max-width: 100%; padding: 10px }
+  .period-presets button { font-size: 14px }
+  .pie-legend .name { font-size: 13px }
+}
+
+/* small devices landscape */
+@media (max-width: 420px) {
+  .filters { gap: 8px }
+  .period-presets button { font-size: 14px }
+  .card { padding: 10px }
+  .pie-legend .name { font-size: 13px }
+}

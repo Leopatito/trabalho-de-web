@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { User } from '../../shared/models/User.models';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  // Use relative URLs so the Angular dev-server proxy (proxy.conf.json) can forward requests to the API.
-  // This avoids CORS in development. In production, replace with an environment-specific base URL.
-  private apiUrl = 'http://localhost:3000';
+  // Base URL comes from the environment configuration.
+  private apiUrl = environment.apiBaseUrl;
 
   constructor(private http: HttpClient) {}
 

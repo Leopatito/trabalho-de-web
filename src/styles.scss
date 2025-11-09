@@ -1,1 +1,30 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global styles to ensure full-viewport backgrounds and remove default margins */
+html, body, app-root {
+	height: 100%;
+}
+
+/* Remove default margin so background touches window edges */
+html, body {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+/* Make app-root take full height so component backgrounds that use 100vh/min-height work */
+app-root {
+	display: block;
+	min-height: 100%;
+}
+
+/* Optional: set a neutral background color behind images */
+body {
+	background-color: #0f1724;
+	/* ensure the background covers the viewport and avoid horizontal scroll */
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: cover;
+	overflow-x: hidden;
+}
+
+/* avoid horizontal overflow on the page */
+html, body { max-width: 100vw; overflow-x: hidden }

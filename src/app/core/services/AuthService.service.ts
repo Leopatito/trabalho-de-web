@@ -35,7 +35,7 @@ export class AuthService {
   }
 
   register(userData: User): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/register`, userData);
+    return this.http.post<User>(`${this.apiUrl}/users`, userData);
   }
 
   logout(): void {

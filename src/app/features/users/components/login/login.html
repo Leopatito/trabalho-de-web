@@ -22,13 +22,15 @@
       />
     </div>
 
+<!--
     <div class="remember-forgot">
       <label>
         <input type="checkbox" [(ngModel)]="remember" name="remember" />
         Lembrar minha senha
       </label>
       <a href="#">Esqueci minha senha</a>
-    </div>
+    </div> -->
+
 
     <button type="submit" [disabled]="loading">
       {{ loading ? 'Entrando...' : 'Login' }}
@@ -37,7 +39,7 @@
     <p *ngIf="error" class="error">{{ error }}</p>
 
     <div class="register-link">
-      <p>Não tem uma conta? <a href="#">Cadastra-se</a></p>
+      <p>Não tem uma conta? <a routerLink="/register">Cadastra-se</a></p>
     </div>
   </form>
 </main>

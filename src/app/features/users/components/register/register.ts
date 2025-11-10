@@ -69,7 +69,38 @@ export class Register {
       },
       error: (err) => {
         this.loading = false;
-        this.error = err?.error?.message || 'Erro ao registrar usuário.';
+        const serverMessage = err?.error?.message;
+
+        // If validation pipe returned an array of validation errors, look for the email field
+        if (Array.isArray(serverMessage)) {
+          // serverMessage items may be objects like { property: 'email', errors: { isUnique: "'x' is already exist" } }
+          const emailEntry = serverMessage.find((m: any) => m && m.property === 'email');
+          if (emailEntry) {
+            this.error = 'este email ja possui uma conta criada';
+            return;
+          }
+          // otherwise try to stringify validation details
+          try {
+            this.error = serverMessage
+              .map((m: any) => (m.property ? `${m.property}: ${Object.values(m.errors || {}).join(', ')}` : JSON.stringify(m)))
+              .join(' | ');
+            return;
+          } catch (_) {
+            // fallthrough
+          }
+        }
+
+        // Some other backends may return a string message or a detail field
+        const detail = err?.error?.detail || '';
+        const text = String(serverMessage || detail || err?.message || '');
+        if (/email/i.test(text) && /already|unique|exists|duplicate|is already/i.test(text)) {
+          this.error = 'este email ja possue uma conta criada';
+          return;
+        }
+
+        // fallback to server message or generic message
+        if (typeof serverMessage === 'string' && serverMessage.length) this.error = serverMessage;
+        else this.error = 'Erro ao registrar usuário.';
       },
     });
   }

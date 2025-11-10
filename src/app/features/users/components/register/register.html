@@ -44,12 +44,16 @@
 
       </fieldset>
 
+      <p *ngIf="error" class="error">{{ error }}</p>
+
       <footer class="form_router">
         <button type="submit" class="button" [disabled]="loading">{{ loading ? 'Cadastrando...' : 'Cadastrar' }}</button>
-        <a routerLink="/login" class="link-login">Já tenho conta</a>
+
       </footer>
 
-      <p *ngIf="error" class="error">{{ error }}</p>
+    <div class="register-link">
+      <p>Já tem uma conta? <a routerLink="/login" class="link-login">Login</a></p>
+    </div>
 
     </form>
 

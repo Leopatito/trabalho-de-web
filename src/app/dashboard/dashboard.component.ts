@@ -62,7 +62,7 @@ export class DashboardComponent implements OnInit {
     try {
       this.authService.logout();
     } catch (e) {
-      console.warn('Logout failed', e);
+      console.warn('Falha desconhecida no logout', e);
     }
     // Navigate to login page after logout
     this.router.navigate(['/login']);

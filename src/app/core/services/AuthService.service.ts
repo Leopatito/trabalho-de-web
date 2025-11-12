@@ -20,8 +20,6 @@ export class AuthService {
         tap((res) => {
           try {
             // Save whole response
-            localStorage.setItem('auth', JSON.stringify(res));
-            // Save token if present (support access_token or token)
             const token = res?.access_token;
             if (token) {
               localStorage.setItem('token', token);
@@ -35,7 +33,7 @@ export class AuthService {
   }
 
   register(userData: User): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/register`, userData);
+    return this.http.post<User>(`${this.apiUrl}/users`, userData);
   }
 
   logout(): void {

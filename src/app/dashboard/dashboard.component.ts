@@ -5,6 +5,8 @@ import { RouterModule } from '@angular/router';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartOptions } from 'chart.js';
 import { DashboardService } from './dashboard.service';
+import { AuthService } from '../core/services/AuthService.service';
+import { Router } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 export * from './dashboard.service';
@@ -54,7 +56,17 @@ export class DashboardComponent implements OnInit {
   loading = false;
   error: string | null = null;
 
-  constructor(private dashboard: DashboardService) {}
+  constructor(private dashboard: DashboardService, private authService: AuthService, private router: Router) {}
+
+  onLogout() {
+    try {
+      this.authService.logout();
+    } catch (e) {
+      console.warn('Falha desconhecida no logout', e);
+    }
+    // Navigate to login page after logout
+    this.router.navigate(['/login']);
+  }
 
   ngOnInit(): void {
     this.loadAccounts();

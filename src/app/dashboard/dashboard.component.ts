@@ -55,86 +55,11 @@ export class DashboardComponent implements OnInit {
   monthlyChartOptions: ChartOptions = { responsive: true, maintainAspectRatio: false };
   loading = false;
   error: string | null = null;
-  avatarUrl: string | null = null;
-  profileMenuOpen = false;
-  private _docClickListener: any = null;
-  profileName: string | null = null;
+  // header/profile are handled by the global Header component now
 
   constructor(private dashboard: DashboardService, private authService: AuthService, private router: Router) {}
 
-  private loadProfile() {
-    // default placeholder: small black SVG
-    const blackSvg = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="100%" height="100%" fill="%23000"/></svg>';
-    this.avatarUrl = blackSvg;
-    // try to fetch profile if authenticated
-    try {
-      this.authService.getProfile().subscribe({
-        next: (u: any) => {
-          const a = u?.avatar;
-          if (a && typeof a === 'string' && a.length) this.avatarUrl = a;
-          const n = u?.name;
-          this.profileName = n && typeof n === 'string' ? n : null;
-          // if user has a name, optionally you could store/use it elsewhere
-        },
-        error: () => {
-          // ignore: keep placeholder
-        },
-      });
-    } catch (e) {
-      // ignore
-    }
-  }
 
-  toggleProfileMenu(e: Event) {
-    e.stopPropagation();
-    this.profileMenuOpen = !this.profileMenuOpen;
-  }
-
-  onChangeAvatar() {
-    this.profileMenuOpen = false;
-    const url = window.prompt('Cole a URL da nova imagem de avatar:');
-    if (url === null) return; // cancelled
-    const trimmed = String(url).trim();
-    if (!trimmed) return alert('URL inválida.');
-    this.authService.updateProfile({ avatar: trimmed }).subscribe({
-      next: () => {
-        this.avatarUrl = trimmed;
-      },
-      error: (err) => {
-        console.error('Failed to update avatar', err);
-        alert('Falha ao atualizar avatar.');
-      },
-    });
-  }
-
-  onChangeName() {
-    this.profileMenuOpen = false;
-    const name = window.prompt('Digite o novo nome do usuário:');
-    if (name === null) return;
-    const trimmed = String(name).trim();
-    if (!trimmed) return alert('Nome inválido.');
-    this.authService.updateProfile({ name: trimmed }).subscribe({
-      next: () => {
-        // refresh profile if needed
-        this.loadProfile();
-        alert('Nome atualizado com sucesso.');
-      },
-      error: (err) => {
-        console.error('Failed to update name', err);
-        alert('Falha ao atualizar nome.');
-      },
-    });
-  }
-
-  onLogout() {
-    try {
-      this.authService.logout();
-    } catch (e) {
-      console.warn('Falha desconhecida no logout', e);
-    }
-    // Navigate to login page after logout
-    this.router.navigate(['/login']);
-  }
 
   ngOnInit(): void {
     this.loadAccounts();
@@ -142,15 +67,11 @@ export class DashboardComponent implements OnInit {
     this.loadOverviewData();
     // Pie chart is controlled by the period selector (default '1m')
     this.loadPieChart();
-    // load user profile (avatar)
-    this.loadProfile();
-    // close profile menu when clicking outside
-    this._docClickListener = () => (this.profileMenuOpen = false);
-    document.addEventListener('click', this._docClickListener);
+    // Header component handles profile/avatar now
   }
 
   ngOnDestroy(): void {
-    if (this._docClickListener) document.removeEventListener('click', this._docClickListener);
+    // nothing to cleanup here related to header
   }
 
   setPeriod(period: string) {
@@ -185,6 +106,8 @@ export class DashboardComponent implements OnInit {
       console.warn('Failed to load accounts', err);
     });
   }
+
+  // Header-related methods were moved to the global HeaderComponent
 
   onAccountChange(value: string | number) {
     const id = value === '' || value === null ? null : Number(value);

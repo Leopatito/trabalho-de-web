@@ -1,8 +1,18 @@
 <header class="app-header">
-    <div class="brand">Finanças Pessoais</div>
-    <div class="header-actions">
-      <button class="logout" (click)="onLogout()">Sair</button>
+  <div class="brand" (click)="$event.stopPropagation()">
+    <img class="avatar-img" [src]="avatarUrl" alt="avatar" (click)="toggleProfileMenu($event)" />
+    <span class="brand-text">Finanças Pessoais</span>
+
+    <div class="profile-menu" *ngIf="profileMenuOpen">
+      <div class="profile-name">{{ profileName || 'Usuário' }}</div>
+      <div class="profile-separator" aria-hidden="true"></div>
+      <button type="button" class="menu-item" (click)="onChangeAvatar()">Alterar imagem da foto</button>
+      <button type="button" class="menu-item" (click)="onChangeName()">Alterar nome do usuário</button>
     </div>
+  </div>
+  <div class="header-actions">
+    <button class="logout" (click)="onLogout()">Sair</button>
+  </div>
 </header>
 
 <div class="dashboard-root">

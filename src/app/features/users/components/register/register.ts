@@ -18,6 +18,9 @@ export class Register {
   email = '';
   password = '';
   confirmPassword = '';
+  avatar = '';
+  dateCreated: string | null = null;
+  lastUpdated: string | null = null;
   loading = false;
   error: string | null = null;
 
@@ -53,12 +56,20 @@ export class Register {
       return;
     }
 
+    // set creation/updated timestamps
+    const now = new Date();
+    this.dateCreated = now.toISOString();
+    this.lastUpdated = this.dateCreated; // initially same as creation
+
     this.loading = true;
 
     const payload: User = {
       name: this.name.trim(),
       email: this.email.trim(),
       password: this.password,
+      avatar: this.avatar?.trim() || undefined,
+      dateCreated: this.dateCreated,
+      lastUpdated: this.lastUpdated,
     };
 
     this.authService.register(payload).subscribe({
@@ -76,7 +87,7 @@ export class Register {
           // serverMessage items may be objects like { property: 'email', errors: { isUnique: "'x' is already exist" } }
           const emailEntry = serverMessage.find((m: any) => m && m.property === 'email');
           if (emailEntry) {
-            this.error = 'este email ja possui uma conta criada';
+            this.error = 'este email ja possue uma conta criada';
             return;
           }
           // otherwise try to stringify validation details

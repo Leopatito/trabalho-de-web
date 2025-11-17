@@ -58,6 +58,88 @@
 /* add spacing so header does not overlap the dashboard filters when sticky */
 // .dashboard-root { padding-top: 64px }
 
+.app-header .avatar-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 12px;
+  background: #000; /* ensure black background when image not loaded */
+  display: inline-block;
+  vertical-align: middle;
+}
+.app-header .brand { display: flex; align-items: center; gap: 8px }
+.app-header .brand .brand-text { font-weight: 600; font-size: 1.05rem }
+
+/* Profile menu (appears below avatar) */
+.app-header .brand { position: relative }
+.profile-menu {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  background: #ffffff;
+  color: #222;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  min-width: 220px;
+  padding: 8px 0;
+  z-index: 120;
+}
+.profile-menu .menu-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+}
+.profile-menu .menu-item:hover { background: #f3f4f6 }
+
+/* small pointer triangle that 'points' to the avatar - centered near left */
+.profile-menu::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 28px; /* adjust as needed to align with avatar */
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #ffffff;
+  z-index: 121;
+}
+
+/* header inside the menu that shows the username */
+.profile-menu .profile-name {
+  text-align: center;
+  padding: 10px 14px;
+  font-weight: 600;
+  color: #111827;
+  font-size: 14px;
+}
+.profile-menu .profile-separator {
+  height: 1px;
+  background: rgba(0,0,0,0.07);
+  margin: 0 12px 6px 12px;
+  border-radius: 1px;
+}
+
+/* animation for dropdown */
+@keyframes menu-drop {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.profile-menu {
+  transform-origin: top center;
+  animation: menu-drop 160ms cubic-bezier(.2,.9,.2,1);
+}
+
+/* hover effect for avatar */
+.app-header .avatar-img { transition: transform 120ms ease, box-shadow 120ms ease; cursor: pointer }
+.app-header .avatar-img:hover { transform: scale(1.08); box-shadow: 0 6px 16px rgba(0,0,0,0.18) }
+
 .dashboard-root::before {
   content: '';
   position: absolute;

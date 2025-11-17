@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgForOf, NgIf } from '@angular/common';
 import { CategoryFormComponent } from './category-form.component';
 import { CategoriesService, CategoryDto } from './categories.service';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, CategoryFormComponent],
+  imports: [CommonModule, NgForOf, NgIf, CategoryFormComponent],
   selector: 'app-categories-list',
   template: `
     <div class="categories-root">

@@ -3,6 +3,7 @@ import { Login } from './features/users/components/login/login';
 import { Register } from './features/users/components/register/register';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthGuard } from './core/guards/auth.guard';
+import { CategoriesListComponent } from './features/categories/categories-list.component';
 
 export const routes: Routes = [
   {
@@ -16,6 +17,11 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'categories',
+    component: CategoriesListComponent,
     canActivate: [AuthGuard],
   },
   {

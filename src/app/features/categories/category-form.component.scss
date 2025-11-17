@@ -1,0 +1,30 @@
+.cat-form {
+  display: block;
+  max-width: 640px;
+  background: rgba(255,255,255,0.03);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+.cat-form div { margin-bottom: 10px }
+.cat-form label { display:block; color: #ffffff; margin-bottom:6px }
+.cat-form input[type="text"], .cat-form select, .cat-form input[type="date"] {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+.cat-form .actions { display:flex; gap:8px; margin-top:8px }
+.cat-form .actions button { padding:8px 12px; border-radius:6px; border:none; cursor:pointer }
+.cat-form .actions button[type="submit"] { background:#1f8a4e; color:#fff }
+.cat-form .actions button[type="button"] { background: rgba(255,255,255,0.04); color:#fff }
+
+.cat-form .errors { color: #b00020; margin-top:8px }
+
+@media (max-width: 420px) {
+  .cat-form { padding: 10px }
+}

@@ -18,9 +18,24 @@ export const routes: Routes = [
     component: DashboardComponent,
     canActivate: [AuthGuard],
   },
+  
   {
     path: '',
     pathMatch: 'full',
     redirectTo: 'dashboard',
   },
+
+  {
+  path: 'accounts/:id/statement',
+  loadComponent: () =>
+    import('./accounts/pages/account-statement/account-statement.component')
+      .then(m => m.AccountStatementComponent)
+  },
+
+  {
+    path: 'accounts',
+    loadChildren: () => import('./accounts/account-routing.module').then(m => m.AccountsRoutingModule),
+  },
+  
+
 ];

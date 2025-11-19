@@ -1,88 +1,131 @@
 <header class="app-header">
-    <div class="brand">Finanças Pessoais</div>
-    <div class="header-actions">
-      <button class="logout" (click)="onLogout()">Sair</button>
-    </div>
+  <div class="brand">Finanças Pessoais</div>
+  <div class="header-actions">
+    <button class="logout" (click)="onLogout()">Sair</button>
+  </div>
 </header>
 
-<div class="dashboard-root">
+<div class="layout" [class.collapsed]="isCollapsed">
 
-  <header class="filters">
-    <div class="period-presets">
-      <label>Período</label>
-      <div class="period-buttons">
-        <button type="button" [class.active]="selectedPeriod==='1m'" (click)="setPeriod('1m')">Último mês</button>
-        <button type="button" [class.active]="selectedPeriod==='3m'" (click)="setPeriod('3m')">Últimos 3 meses</button>
-        <button type="button" [class.active]="selectedPeriod==='6m'" (click)="setPeriod('6m')">Últimos 6 meses</button>
-        <button type="button" [class.active]="selectedPeriod==='custom'" (click)="setPeriod('custom')">Personalizado</button>
+  <aside class="sidebar">
+    <!-- Botão para alternar o estado da sidebar -->
+    <button class="toggle-btn" (click)="toggleSidebar()">
+      <span class="material-icons">
+        {{ isCollapsed ? 'menu' : 'close' }}
+      </span>
+    </button>
+
+    <!-- Menu de navegação -->
+    <nav class="menu">
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
+        <span class="material-icons">home</span>
+        <span class="label">Dashboard</span>
+      </a>
+
+      <a routerLink="/accounts" routerLinkActive="active" class="nav-link">
+        <span class="material-icons">account_balance_wallet</span>
+        <span class="label">Minhas Contas</span>
+      </a>
+
+      <a routerLink="/transactions" routerLinkActive="active" class="nav-link">
+        <span class="material-icons">receipt_long</span>
+        <span class="label">Transações</span>
+      </a>
+
+      <a routerLink="/profile" routerLinkActive="active" class="nav-link">
+        <span class="material-icons">person</span>
+        <span class="label">Perfil</span>
+      </a>
+
+      <!-- Logout -->
+      <button class="nav-item logout" (click)="onLogout()">
+        <span class="material-icons">logout</span>
+        <span class="label">Sair</span>
+      </button>
+    </nav>
+  </aside>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="dashboard-root">
+
+    <header class="filters">
+      <div class="period-presets">
+        <label>Período</label>
+        <div class="period-buttons">
+          <button type="button" [class.active]="selectedPeriod==='1m'" (click)="setPeriod('1m')">Último mês</button>
+          <button type="button" [class.active]="selectedPeriod==='3m'" (click)="setPeriod('3m')">Últimos 3 meses</button>
+          <button type="button" [class.active]="selectedPeriod==='6m'" (click)="setPeriod('6m')">Últimos 6 meses</button>
+          <button type="button" [class.active]="selectedPeriod==='custom'" (click)="setPeriod('custom')">Personalizado</button>
+        </div>
+
+        <div class="custom-range" *ngIf="selectedPeriod==='custom'">
+          <input type="date" [(ngModel)]="customStart" aria-label="Data início" />
+          <span class="sep">até</span>
+          <input type="date" [(ngModel)]="customEnd" aria-label="Data fim" />
+          <button type="button" (click)="applyCustomPeriod()">Aplicar</button>
+        </div>
       </div>
 
-      <div class="custom-range" *ngIf="selectedPeriod==='custom'">
-        <input type="date" [(ngModel)]="customStart" aria-label="Data início" />
-        <span class="sep">até</span>
-        <input type="date" [(ngModel)]="customEnd" aria-label="Data fim" />
-        <button type="button" (click)="applyCustomPeriod()">Aplicar</button>
+      <div class="account-filter">
+        <label>Conta</label>
+        <select #accountSelect (change)="onAccountChange(accountSelect.value)" 
+          [value]="selectedAccountId !== null ? selectedAccountId : ''">
+          <option value="">Todas</option>
+          <option *ngFor="let a of accounts" [value]="a.id">{{ a.name }}</option>
+        </select>
       </div>
-    </div>
+    </header>
 
-    <div class="account-filter">
-      <label>Conta</label>
-      <select #accountSelect (change)="onAccountChange(accountSelect.value)" [value]="selectedAccountId !== null ? selectedAccountId : ''">
-        <option value="">Todas</option>
-        <option *ngFor="let a of accounts" [value]="a.id">{{ a.name }}</option>
-      </select>
-    </div>
-  </header>
+    <div *ngIf="loading">Loading dashboard...</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
 
-  <div *ngIf="loading">Loading dashboard...</div>
-  <div *ngIf="error" class="error">{{ error }}</div>
-
-  <section class="cards" *ngIf="periodReport">
-    <div class="card">
-      <div class="label">Total Receitas (mês atual)</div>
-      <div class="value">{{ periodReport.totalIncome | number:'1.2-2' }}</div>
-    </div>
-    <div class="card">
-      <div class="label">Total Despesas (mês atual)</div>
-      <div class="value negative">{{ periodReport.totalExpenses | number:'1.2-2' }}</div>
-    </div>
-    <div class="card">
-      <div class="label">Saldo Atual</div>
-      <div class="value">{{ periodReport.currentBalance | number:'1.2-2' }}</div>
-    </div>
-    <div class="card">
-      <div class="label">Economia</div>
-      <div class="value">{{ periodReport.totalIncome - periodReport.totalExpenses | number:'1.2-2' }}</div>
-    </div>
-  </section>
-
-  <section class="charts" *ngIf="periodReport">
-    <div class="chart-left">
-      <h3>Despesas por categoria</h3>
-      <div class="chart-pie">
-  <canvas baseChart [data]="pieChartData" [options]="pieChartOptions" [type]="'doughnut'"></canvas>
+    <section class="cards" *ngIf="periodReport">
+      <div class="card">
+        <div class="label">Total Receitas (mês atual)</div>
+        <div class="value">{{ periodReport.totalIncome | number:'1.2-2' }}</div>
       </div>
-      <ul class="pie-legend" *ngIf="periodReport?.categorySummary?.length; else noCategories">
-        <li *ngFor="let c of periodReport.categorySummary; let i = index; trackBy: trackByCategory">
-          <span class="dot" [style.background]="pieChartData.datasets[0].backgroundColor?.[i] || '#ccc'"></span>
-          <span class="name">{{ c.categoryName }}</span>
-          <span class="value">{{ c.total | number:'1.2-2' }}</span>
-          <span class="percent">{{ (c.total / (periodReport.totalExpenses || 1) * 100) | number:'1.0-0' }}%</span>
-        </li>
-      </ul>
-      <ng-template #noCategories>
-        <div class="no-data">Nenhuma categoria encontrada para este período.</div>
-      </ng-template>
-    </div>
-
-    <div class="chart-right" *ngIf="monthlySummary">
-      <h3>Evolução mensal</h3>
-      <div class="chart-bar">
-        <canvas baseChart [data]="monthlyChartData" [options]="monthlyChartOptions" [type]="'bar'"></canvas>
+      <div class="card">
+        <div class="label">Total Despesas (mês atual)</div>
+        <div class="value negative">{{ periodReport.totalExpenses | number:'1.2-2' }}</div>
       </div>
-    </div>
-  </section>
+      <div class="card">
+        <div class="label">Saldo Atual</div>
+        <div class="value">{{ periodReport.currentBalance | number:'1.2-2' }}</div>
+      </div>
+      <div class="card">
+        <div class="label">Economia</div>
+        <div class="value">{{ periodReport.totalIncome - periodReport.totalExpenses | number:'1.2-2' }}</div>
+      </div>
+    </section>
 
-  <!-- Recent transactions removed from dashboard UI per request -->
+    <section class="charts" *ngIf="periodReport">
+      <div class="chart-left">
+        <h3>Despesas por categoria</h3>
+        <div class="chart-pie">
+          <canvas baseChart [data]="pieChartData" [options]="pieChartOptions" [type]="'doughnut'"></canvas>
+        </div>
 
+        <ul class="pie-legend" *ngIf="periodReport?.categorySummary?.length; else noCategories">
+          <li *ngFor="let c of periodReport.categorySummary; let i = index; trackBy: trackByCategory">
+            <span class="dot" [style.background]="pieChartData.datasets[0].backgroundColor?.[i] || '#ccc'"></span>
+            <span class="name">{{ c.categoryName }}</span>
+            <span class="value">{{ c.total | number:'1.2-2' }}</span>
+            <span class="percent">{{ (c.total / (periodReport.totalExpenses || 1) * 100) | number:'1.0-0' }}%</span>
+          </li>
+        </ul>
+
+        <ng-template #noCategories>
+          <div class="no-data">Nenhuma categoria encontrada para este período.</div>
+        </ng-template>
+      </div>
+
+      <div class="chart-right" *ngIf="monthlySummary">
+        <h3>Evolução mensal</h3>
+        <div class="chart-bar">
+          <canvas baseChart [data]="monthlyChartData" [options]="monthlyChartOptions" [type]="'bar'"></canvas>
+        </div>
+      </div>
+    </section>
+
+  </main>
 </div>

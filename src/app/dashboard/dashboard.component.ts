@@ -12,6 +12,8 @@ import { catchError, finalize } from 'rxjs/operators';
 export * from './dashboard.service';
 export * from './dashboard.component';
 
+
+
 @Component({
   standalone: true,
   imports: [CommonModule, BaseChartDirective, FormsModule, RouterModule],
@@ -20,6 +22,11 @@ export * from './dashboard.component';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
+  isCollapsed: boolean = true;
+
+  toggleSidebar() {
+    this.isCollapsed = !this.isCollapsed;
+  }
   periodReport: any = null;
   monthlySummary: any = null;
   accounts: any[] = [];

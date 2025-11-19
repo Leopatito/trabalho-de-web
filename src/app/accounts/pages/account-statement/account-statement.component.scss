@@ -1,0 +1,93 @@
+:host {
+  display: block;
+  min-height: 100vh;
+
+  /* IMAGEM DE FUNDO */
+  background-image: url('../../../features/users/components/login/fundotrab.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.statement-container {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 900px;
+  margin: 30px auto;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+
+}
+
+.body {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 40px;
+  min-height: 100vh;
+
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.loading,
+.no-data {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+/* Tabela */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+
+  thead th {
+    background: #f2f2f2;
+    padding: 20px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  tbody td {
+    padding: 50px;
+    border-bottom: 1px solid #eee;
+  }
+}
+
+.text-right {
+  text-align: right;
+}
+
+/* Badges de tipo */
+.type-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: white;
+  font-weight: 600;
+  text-transform: capitalize;
+
+  &.income { background: #16a34a; }
+  &.expense { background: #dc2626; }
+  &.transfer { background: #2563eb; }
+}
+
+/* Valores */
+.amount.income { color: #16a34a; }
+.amount.expense { color: #dc2626; }
+
+/* Botão voltar */
+.back button {
+  margin-top: 20px;
+  padding: 10px 18px;
+  background: #555;
+  color: white;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    background: #333;
+  }
+}

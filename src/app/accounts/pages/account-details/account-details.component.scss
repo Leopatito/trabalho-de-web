@@ -1,0 +1,151 @@
+/* Container principal */
+.container {
+  background: #ffffff;
+  padding: 2rem 2.5rem;
+  margin: 30px auto;
+  max-width: 900px;
+  border-radius: 14px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Título */
+h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #1e293b;
+}
+
+h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: #334155;
+}
+
+/* Box da conta */
+.account-box {
+  background: #f8fafc;
+  padding: 1.3rem 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  border: 1px solid #e2e8f0;
+
+  p {
+    margin: 6px 0;
+    color: #475569;
+
+    strong {
+      color: #1e293b;
+    }
+  }
+}
+
+/* Tabela */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead {
+    background: #f1f5f9;
+
+    th {
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #475569;
+      border-bottom: 2px solid #e2e8f0;
+    }
+  }
+
+  tbody {
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #e5e7eb;
+      color: #334155;
+      font-size: 0.95rem;
+    }
+
+    tr:hover {
+      background-color: #f8fafc;
+    }
+  }
+}
+
+/* Cores do valor */
+.income {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.expense {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+/* Mensagem de vazio */
+.empty {
+  text-align: center;
+  color: #64748b;
+  padding: 20px 0;
+  font-style: italic;
+}
+
+/* Loading */
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.2rem;
+  color: #475569;
+}
+
+/* Botão voltar */
+.btn.back {
+  margin-top: 25px;
+  background: #475569;
+  color: #fff;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #334155;
+  }
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .container {
+    padding: 1.5rem;
+  }
+
+  .table thead {
+    display: none;
+  }
+
+  .table tbody tr {
+    display: block;
+    margin-bottom: 12px;
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 10px;
+  }
+
+  .table tbody td {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 8px;
+    border-bottom: none;
+
+    &::before {
+      content: attr(data-label);
+      font-weight: 600;
+      color: #475569;
+    }
+  }
+}

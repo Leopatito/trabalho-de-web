@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "assets": [
+      {
+        "include": "../node_modules/swagger-ui-themes/themes/3.x/theme-flattop.css",
+        "outDir": "./public/css"
+      }
+    ],
+    "watchAssets": true
+  }
+}

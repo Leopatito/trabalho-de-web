@@ -12,8 +12,6 @@ import { catchError, finalize } from 'rxjs/operators';
 export * from './dashboard.service';
 export * from './dashboard.component';
 
-
-
 @Component({
   standalone: true,
   imports: [CommonModule, BaseChartDirective, FormsModule, RouterModule],

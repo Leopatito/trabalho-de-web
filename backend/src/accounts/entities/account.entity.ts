@@ -50,4 +50,7 @@ export class Account extends UserBaseEntity {
   updateCurrentBalance() {
     this.currentBalance = this.initialBalance;
   }
+
+  @Column('float', { default: 0 })
+  balance: number;
 }

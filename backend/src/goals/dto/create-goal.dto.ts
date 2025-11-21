@@ -56,4 +56,9 @@ export class CreateGoalDto {
   @IsOptional()
   @IsString()
   description?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  accumulatedValue?: number;
 }

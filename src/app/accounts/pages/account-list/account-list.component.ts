@@ -57,7 +57,6 @@ export class AccountsListComponent implements OnInit {
 
     this.accountsService.getAll().subscribe({
       next: (response) => {
-        // A API retorna { items: [...], meta: {...} }
         this.accounts = response.items || [];
         this.loading = false;
         

@@ -45,4 +45,8 @@ export class AccountsService {
   getStatement(accountId: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.api}/${accountId}/statement`);
   }
+
+  updateBalance(accountId: number, amount: number): Observable<Account> {
+    return this.http.patch<Account>(`${this.api}/${accountId}/update-balance`, { amount });
+  }
 }

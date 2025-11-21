@@ -68,14 +68,15 @@ export class GoalsController {
     return this.goalsService.findOne(id);
   }
 
+  @Patch(':id')
   @ApiOperation({
     summary: 'Update goal',
     description: 'Updates a goal for the authenticated user.',
   })
+  
   @ApiParam({ name: 'id', type: Number, description: 'Goal ID' })
   @ApiOkResponse({ type: Goal })
-  @Patch(':id')
-  update(
+  async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateGoalDto: UpdateGoalDto,
   ) {

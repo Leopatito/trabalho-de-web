@@ -12,6 +12,7 @@ import { StandardTransaction } from 'src/transactions/entities/standard-transact
 import { AccountsService } from 'src/accounts/accounts.service';
 import { CategoriesService } from 'src/categories/categories.service';
 import { Category } from 'src/categories/entities/category.entity';
+import { UpdateGoalDto } from './dto/update-goal.dto';
 
 @Injectable()
 export class GoalsService extends BaseService<Goal> {
@@ -262,4 +263,41 @@ export class GoalsService extends BaseService<Goal> {
           : GoalStatus.IN_PROGRESS;
     }
   }
+  public async updateGoal(
+    id: number,
+    updateGoalDto: UpdateGoalDto
+  ): Promise<Goal> {
+    const goal = await this.repository.findOne({ where: { id } });
+
+    if (!goal) {
+      throw new Error('Goal not found');
+    }
+
+    // Atualiza a meta com os dados do DTO
+    Object.assign(goal, updateGoalDto);
+
+    // Verifique se há um accumulatedValue e accountId
+    if (updateGoalDto.accumulatedValue && updateGoalDto.accountId) {
+      const account = await this.accountsService.findOne(updateGoalDto.accountId);
+
+      if (!account) {
+        throw new Error('Account not found');
+      }
+
+      // Verifique o saldo da conta
+      if (account.balance < updateGoalDto.accumulatedValue) {
+        throw new Error('Insufficient balance in the account');
+      }
+
+      // Subtração do valor da conta
+      account.balance -= updateGoalDto.accumulatedValue;
+      await this.accountsService.update(account.id, account);
+
+      // Atualiza o accumulatedValue na meta
+      goal.accumulatedValue = (goal.accumulatedValue ?? 0) + updateGoalDto.accumulatedValue;
+    }
+
+    return await this.repository.save(goal);
+  }
+
 }

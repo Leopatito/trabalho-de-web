@@ -1,7 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
 import { UserBaseEntity } from '@shared/entities/user-base.entity';
 import { GoalType } from 'src/goals/entities/goal-type.enum';
+import { Account } from 'src/accounts/entities/account.entity';
 
 @Entity()
 export class Goal extends UserBaseEntity {
@@ -42,7 +43,17 @@ export class Goal extends UserBaseEntity {
   })
   endDate: Date;
 
+  @ApiPropertyOptional({ description: 'Accumulated value manually added by the user' })
+  @Column('float', { default: 0 })
+  accumulatedValue: number;
+
   @ApiPropertyOptional({ description: 'Goal description' })
   @Column({ nullable: true })
   description?: string;
+
+  @ApiPropertyOptional({ description: 'The account associated with this goal' })
+  @ManyToOne(() => Account) 
+  @JoinColumn({ name: 'accountId' })
+  account: Account;
 }
+

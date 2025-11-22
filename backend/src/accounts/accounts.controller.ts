@@ -27,14 +27,34 @@ import { Account } from './entities/account.entity';
 import { QueryActiveListDto } from '@shared/dto/query-active-list.dto';
 import { FindManyOptions, ILike } from 'typeorm';
 import { isDefined, isNotEmpty } from 'class-validator';
+import { BadRequestException } from '@nestjs/common';
 
 @ApiTags('Accounts')
 @ApiBearerAuth('access-token')
 @Controller('accounts')
 @FilterByOwner()
 export class AccountsController {
+  
   constructor(private readonly accountsService: AccountsService) {}
 
+  @Patch(':id/update-balance')
+  async updateBalance(
+    @Param('id') id: string,
+    @Body('amount') amount: any
+  ) {
+    const numericId = Number(id);
+    const numericAmount = Number(amount);
+
+    if (isNaN(numericId)) {
+      throw new BadRequestException('ID inválido.');
+    }
+
+    if (isNaN(numericAmount)) {
+      throw new BadRequestException('O valor enviado para atualizar o saldo não é um número válido.');
+    }
+
+    return this.accountsService.updateBalance({ id: numericId }, numericAmount);
+  }
   @ApiOperation({
     summary: 'Create account',
     description: 'Creates a new financial account for the authenticated user.',

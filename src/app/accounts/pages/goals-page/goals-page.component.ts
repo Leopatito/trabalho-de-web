@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { GoalType } from '../../../core/models/goals.model';
 import { GoalsService } from '../../../core/services/goals.service';
 import { AccountsService } from '../../../core/services/accounts.service';
+import { TransactionService } from '../../../core/services/transaction.service';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 
@@ -12,7 +13,7 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   templateUrl: './goals-page.component.html',
   styleUrls: ['./goals-page.component.scss'],
-  imports: [CommonModule, FormsModule,RouterModule]
+  imports: [CommonModule, FormsModule, RouterModule]
 })
 export class GoalsPageComponent implements OnInit {
   accounts: any[] = [];
@@ -23,8 +24,11 @@ export class GoalsPageComponent implements OnInit {
   modalOpen = false;
 
   addValueModalOpen = false;
+  withdrawModalOpen = false;
+
   selectedGoal: any = null;
   valueToAdd: number = 0;
+  valueToWithdraw: number = 0;
 
   goalForm = {
     description: '',
@@ -34,9 +38,12 @@ export class GoalsPageComponent implements OnInit {
     type: 'POUPANCA' as GoalType
   };
 
-  constructor(private goalService: GoalsService, 
-              private accountService: AccountsService,
-              private router: Router ) {}
+  constructor(
+    private goalService: GoalsService,
+    private accountService: AccountsService,
+    private transactionService: TransactionService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.loadGoals();
@@ -71,25 +78,54 @@ export class GoalsPageComponent implements OnInit {
   }
 
   computeGoal(g: any) {
-    const current = g.accumulatedValue ?? 0;
+    const accumulated = g.accumulatedValue ?? 0;
     const target = g.targetValue ?? 1;
-    const progress = Number(((current / target) * 100).toFixed(2));
+    const progress = Number(((accumulated / target) * 100).toFixed(2));
+
+    const today = new Date();
+    const start = g.startDate ? new Date(g.startDate) : null;
+    const end = g.endDate ? new Date(g.endDate) : null;
+
+    let status = 'Em andamento';
+
+    const reached = accumulated >= target;
+    const expired = end && today.getTime() > end.getTime();
+
+    switch (g.type) {
+      case 'POUPANCA':
+      case 'INVESTIMENTO':
+      case 'COMPRA':
+      case 'DIVIDA':
+      case 'ORCAMENTO':
+        if (reached) status = 'Concluida';
+        else if (expired) status = 'Expirada';
+        else status = 'Em andamento';
+        break;
+
+      case 'LIMITE':
+        if (accumulated > target) status = 'Excedida';
+        else status = 'Limite disponível';
+        break;
+
+      default:
+        status = 'Em andamento';
+    }
 
     return {
       ...g,
       description: g.description ?? 'Meta sem descrição',
-      currentValue: current,
+      currentValue: accumulated,
       progress,
-      startDate: g.startDate ? new Date(g.startDate) : null,
-      endDate: g.endDate ? new Date(g.endDate) : null,
-      status: progress >= 100 ? 'Concluída' : 'Em andamento'
+      startDate: start,
+      endDate: end,
+      status: status.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase()
     };
+
   }
 
   isCollapsed: boolean = true;
 
-  toggleSidebar()
-  {
+  toggleSidebar() {
     this.isCollapsed = !this.isCollapsed;
   }
 
@@ -128,7 +164,7 @@ export class GoalsPageComponent implements OnInit {
       targetValue: this.goalForm.targetValue,
       startDate: this.goalForm.startDate,
       endDate: this.goalForm.endDate,
-      accumulatedValue: 0  // Definido como 0 para iniciar a meta
+      accumulatedValue: 0
     };
 
     this.goalService.create(payload).subscribe({
@@ -172,21 +208,31 @@ export class GoalsPageComponent implements OnInit {
   }
 
   deleteGoal(id: number) {
-  if (!confirm("Tem certeza que deseja excluir esta meta?")) {
-    return;
+    const goal = this.goals.find(g => g.id === id);
+
+    if (goal && goal.accumulatedValue > 0) {
+      alert("Você só pode excluir metas que não possuem valor acumulado.");
+      return;
+    }
+
+    if (!confirm("Tem certeza que deseja excluir esta meta?")) {
+      return;
+    }
+
+    this.goalService.delete(id).subscribe({
+      next: () => {
+        this.loadGoals();
+      },
+      error: (err) => {
+        console.error(err);
+        alert("Erro ao excluir a meta.");
+      }
+    });
   }
 
-  this.goalService.delete(id).subscribe({
-    next: () => {
-      // Recarrega a lista após excluir
-      this.loadGoals();
-    },
-    error: (err) => {
-      console.error(err);
-      alert("Erro ao excluir a meta.");
-    }
-  });
-}
+  // =======================
+  // 🔵 ADICIONAR VALOR
+  // =======================
   openAddValueModal(goal: any) {
     this.selectedGoal = goal;
     this.valueToAdd = 0;
@@ -202,7 +248,7 @@ export class GoalsPageComponent implements OnInit {
   }
 
   onAccountChange(event: any) {
-    this.selectedAccountId = event.target.value;
+    this.selectedAccountId = Number(event.target.value);
   }
 
   confirmAddValue() {
@@ -216,7 +262,7 @@ export class GoalsPageComponent implements OnInit {
       return;
     }
 
-    const accountId = this.selectedAccountId; // Agora é number, não number|null
+    const accountId = this.selectedAccountId;
 
     this.accountService.getById(accountId).subscribe({
       next: (account) => {
@@ -227,6 +273,16 @@ export class GoalsPageComponent implements OnInit {
 
         this.accountService.updateBalance(accountId, -this.valueToAdd).subscribe({
           next: () => {
+
+            // Criar transação APÓS atualizar o saldo
+            this.transactionService.create({
+              accountId,
+              amount: -this.valueToAdd,
+              type: 'EXPENSE',
+              description: `Valor adicionado à meta ${this.selectedGoal.description}`,
+              date: new Date()
+            }).subscribe();
+
             const newAccumulatedValue =
               (this.selectedGoal.accumulatedValue ?? 0) + this.valueToAdd;
 
@@ -237,15 +293,73 @@ export class GoalsPageComponent implements OnInit {
                 this.closeAddValueModal();
                 this.loadGoals();
               },
-              error: () => alert("Erro ao adicionar valor à meta."),
+              error: () => alert("Erro ao adicionar valor à meta.")
             });
           },
-          error: () => alert("Erro ao atualizar o saldo da conta."),
+          error: () => alert("Erro ao atualizar o saldo da conta.")
         });
       },
-      error: () => alert("Erro ao buscar a conta."),
+      error: () => alert("Erro ao buscar a conta.")
+    });
+  }
+
+  openWithdrawModal(goal: any) {
+    this.selectedGoal = goal;
+    this.valueToWithdraw = 0;
+    this.selectedAccountId = null;
+    this.withdrawModalOpen = true;
+  }
+
+  closeWithdrawModal() {
+    this.withdrawModalOpen = false;
+    this.selectedGoal = null;
+    this.valueToWithdraw = 0;
+    this.selectedAccountId = null;
+  }
+
+  confirmWithdraw() {
+    if (!this.valueToWithdraw || this.valueToWithdraw <= 0) {
+      alert("Informe um valor válido.");
+      return;
+    }
+
+    if (this.selectedAccountId === null) {
+      alert("Selecione uma conta.");
+      return;
+    }
+
+    if (this.selectedGoal.accumulatedValue < this.valueToWithdraw) {
+      alert("A meta não possui saldo suficiente.");
+      return;
+    }
+
+    const accountId = this.selectedAccountId;
+
+    this.accountService.updateBalance(accountId, this.valueToWithdraw).subscribe({
+      next: () => {
+
+        this.transactionService.create({
+          accountId,
+          amount: this.valueToWithdraw,
+          type: 'INCOME',
+          description: `Saque da meta ${this.selectedGoal.description}`,
+          date: new Date()
+        }).subscribe();
+
+        const newAccumulatedValue =
+          this.selectedGoal.accumulatedValue - this.valueToWithdraw;
+
+        const payload = { accumulatedValue: newAccumulatedValue };
+
+        this.goalService.update(this.selectedGoal.id, payload).subscribe({
+          next: () => {
+            this.closeWithdrawModal();
+            this.loadGoals();
+          },
+          error: () => alert("Erro ao atualizar a meta.")
+        });
+      },
+      error: () => alert("Erro ao atualizar saldo da conta.")
     });
   }
 }
-
-

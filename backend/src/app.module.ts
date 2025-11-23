@@ -17,7 +17,7 @@ import { GoalsModule } from './goals/goals.module';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
-      type: 'sqlite',
+      type: 'better-sqlite3',
       database: 'database/finance.db',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,

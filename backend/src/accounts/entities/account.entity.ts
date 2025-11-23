@@ -39,8 +39,11 @@ export class Account extends UserBaseEntity {
   @Column({ nullable: true })
   icon: string;
 
-  @OneToMany(() => Transaction, (transaction) => transaction.account)
+  @OneToMany(() => Transaction, (transaction) => transaction.account, {
+    eager: true,
+  })
   transactions: Transaction[];
+
 
   @ApiProperty({ description: 'Indicates if the account is active' })
   @Column({ default: true })

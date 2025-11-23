@@ -16,15 +16,36 @@ export class TransactionsService extends BaseService<Transaction> {
     super(repository, appContext);
   }
 
-  create(createDto: DeepPartial<Transaction>): Promise<Transaction> {
-    throw new Error('Method not implemented.');
+  async create(createDto: DeepPartial<Transaction>): Promise<Transaction> {
+    const transaction = this.repository.create(createDto);
+    return this.repository.save(transaction);
   }
 
-  update(id: number, updateDto: Transaction): Promise<Transaction> {
-    throw new Error('Method not implemented.');
+  async update(id: number, updateDto: DeepPartial<Transaction>): Promise<Transaction> {
+    await this.repository.update(id, updateDto);
+
+    const updated = await this.repository.findOne({ where: { id } });
+
+    if (!updated) {
+      throw new Error(`Transaction with id ${id} not found`);
+    }
+
+    return updated;
   }
 
-  remove(id: number): Promise<void> {
-    throw new Error('Method not implemented.');
+  async remove(id: number): Promise<void> {
+    await this.repository.delete(id);
+  }
+
+  async findByAccount(accountId: number): Promise<Transaction[]> {
+  return this.repository.find({
+    where: { account: { id: accountId } },
+    order: { date: 'DESC' },
+    relations: ['category', 'account'],
+  });
+  }
+
+  find(options) {
+    return this.repository.find(options);
   }
 }

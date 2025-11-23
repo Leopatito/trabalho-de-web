@@ -26,6 +26,9 @@ import { StandardTransactionQueryListDto } from './dto/standard-transaction-quer
 import { TransactionsService } from './transactions.service';
 import { TransactionQueryListDto } from './dto/transaction-query-list.dto';
 import { Transaction } from './entities/transaction.entity';
+import { Body, Post } from '@nestjs/common';
+
+
 
 @ApiTags('Transactions')
 @ApiBearerAuth('access-token')
@@ -36,6 +39,13 @@ export class TransactionsController {
     private readonly transactionsService: TransactionsService,
   ) {}
 
+  @Post()
+  async create(@Body() dto: any) {
+    return this.transactionsService.create({
+      ...dto,
+      account: { id: dto.accountId },
+    });
+  }
   @ApiOperation({
     summary: 'List transactions',
     description:
@@ -76,4 +86,9 @@ export class TransactionsController {
 
     return { where };
   };
+
+    @Get(':id/transactions')
+  async getTransactionsByAccount(@Param('id') id: number) {
+    return this.transactionsService.findByAccount(id);
+  }
 }

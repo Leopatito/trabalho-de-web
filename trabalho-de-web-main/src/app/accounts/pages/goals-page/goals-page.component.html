@@ -1,0 +1,238 @@
+<div class="goals-page-container" [class.sidebar-collapsed]="isCollapsed">
+  <header class="topbar">
+    <div class="left-area">
+      <div class="brand">Finanças Pessoais</div>
+    </div>
+  </header>
+
+  <nav class="sidebar" [class.collapsed]="isCollapsed">
+    <div class="sidebar-content">
+      <button class="toggle-btn" (click)="toggleSidebar()">
+        <span class="material-icons">{{ isCollapsed ? 'menu' : 'close' }}</span>
+      </button>
+
+      <a routerLink="/dashboard" class="nav-item">
+        <span class="material-icons">home</span>
+        <span class="label">Dashboard</span>
+      </a>
+
+      <a routerLink="/accounts" class="nav-item">
+        <span class="material-icons">account_balance_wallet</span>
+        <span class="label">Minhas Contas</span>
+      </a>
+
+      <a routerLink="/goals" routerLinkActive="active" class="nav-item">
+        <span class="material-icons">receipt_long</span>
+        <span class="label">Metas</span>
+      </a>
+
+      <a routerLink="/profile" class="nav-item">
+        <span class="material-icons">person</span>
+        <span class="label">Perfil</span>
+      </a>
+
+      <button class="nav-item logout" (click)="onLogout()">
+        <span class="material-icons">logout</span>
+        <span class="label">Sair</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- CONTEÚDO DA PÁGINA -->
+  <div class="goals-container">
+
+    <div class="header">
+      <h1><i class="fa-solid fa-bullseye"></i> Minhas Metas</h1>
+
+      <button class="btn-add" type="button" (click)="openModal()">
+        <i class="fa-solid fa-plus"></i> Nova Meta
+      </button>
+    </div>
+
+    <div *ngIf="loading" class="loading">
+      <i class="fa-solid fa-spinner fa-spin"></i> Carregando...
+    </div>
+
+    <div *ngIf="error" class="error">
+      <i class="fa-solid fa-circle-exclamation"></i> {{ error }}
+    </div>
+
+    <div *ngIf="goals.length === 0 && !loading" class="empty">
+      <i class="fa-regular fa-folder-open"></i> Nenhuma meta encontrada.
+    </div>
+
+    <div class="goals-grid" *ngIf="goals.length > 0">
+
+      <!-- LOOP CORRIGIDO -->
+      <div *ngFor="let g of goals"
+        class="goal-card"
+        [ngClass]="{
+          'status-in-progress': g.status === 'EM_ANDAMENTO',
+          'status-completed': g.status === 'CONCLUIDA',
+          'status-expired': g.status === 'EXPIRADA',
+          'status-exceeded': g.status === 'EXCEDIDA'
+        }">
+
+        <!-- SACAR -->
+        <button
+          class="withdraw-btn"
+          (click)="openWithdrawModal(g)">
+          <i class="fa-solid fa-hand-holding-dollar"></i>
+          Sacar
+        </button>
+
+        <div class="goal-header">
+          <h3><i class="fa-solid fa-flag"></i> {{ g.description }}</h3>
+
+          <span class="status-badge"
+                [ngClass]="{
+                  'badge-in-progress': g.status === 'EM ANDAMENTO',
+                  'badge-completed': g.status === 'CONCLUIDA',
+                  'badge-expired': g.status === 'EXPIRADA',
+                  'badge-exceeded': g.status === 'EXCEDIDA'
+                }">
+            {{ g.status }}
+          </span>
+        </div>
+
+        <p><strong>Progresso:</strong> {{ g.currentValue }} / {{ g.targetValue }}</p>
+
+        <div class="progress-bar">
+          <div 
+            class="progress-fill"
+            [ngClass]="{
+                'status-in-progress': g.status === 'EM_ANDAMENTO',
+                'status-completed': g.status === 'CONCLUIDA',
+                'status-expired': g.status === 'EXPIRADA',
+                'status-exceeded': g.status === 'EXCEDIDA'
+            }"
+            [style.width.%]="g.progress">
+          </div>
+        </div>
+
+        <p class="status-info">
+          <i class="fa-solid fa-circle-info"></i>
+          Status: 
+          <strong 
+            class="status-text"
+            [ngClass]="{
+              'in-progress': g.status === 'EM ANDAMENTO',
+              'completed': g.status === 'CONCLUIDA',
+              'expired': g.status === 'EXPIRADA',
+              'exceeded': g.status === 'EXCEDIDA'
+            }">
+            {{ g.status }}
+          </strong>
+        </p>
+
+        <div class="dates">
+          <p><i class="fa-solid fa-calendar-day"></i> Início: {{ g.startDate | date }}</p>
+          <p><i class="fa-solid fa-calendar-check"></i> Fim: {{ g.endDate | date }}</p>
+        </div>
+
+        <button class="btn-add-value" (click)="openAddValueModal(g)">
+          <i class="fa-solid fa-coins"></i> Adicionar valor
+        </button>
+
+        <button class="delete-btn" (click)="deleteGoal(g.id)">
+          <i class="fa-solid fa-trash"></i> Excluir
+        </button>
+
+      </div> 
+
+    </div> 
+
+  </div> 
+</div>
+
+<!-- MODAL NOVA META -->
+<div class="backdrop" *ngIf="modalOpen" (click)="closeModal()"></div>
+
+<div class="modal" *ngIf="modalOpen" (click)="$event.stopPropagation()">
+  <h2><i class="fa-solid fa-plus"></i> Nova Meta</h2>
+
+  <label>Descrição</label>
+  <input type="text" [(ngModel)]="goalForm.description">
+
+  <label>Valor objetivo</label>
+  <input type="number" [(ngModel)]="goalForm.targetValue">
+
+  <label>Data início</label>
+  <input type="date" [(ngModel)]="goalForm.startDate">
+
+  <label>Data final</label>
+  <input type="date" [(ngModel)]="goalForm.endDate">
+
+  <label>Tipo da meta</label>
+  <select [(ngModel)]="goalForm.type">
+    <option value="POUPANCA">Poupança</option>
+    <option value="DIVIDA">Dívida</option>
+    <option value="COMPRA">Compra</option>
+    <option value="ORCAMENTO">Orçamento</option>
+    <option value="INVESTIMENTO">Investimento</option>
+    <option value="LIMITE">Limite</option>
+
+  </select>
+
+  <div class="actions">
+    <button class="cancel" (click)="closeModal()">
+      <i class="fa-solid fa-xmark"></i> Cancelar
+    </button>
+    <button class="save" (click)="saveGoal()">
+      <i class="fa-solid fa-check"></i> Salvar
+    </button>
+  </div>
+</div>
+
+<!-- MODAL ADICIONAR VALOR -->
+<div class="backdrop" *ngIf="addValueModalOpen" (click)="closeAddValueModal()"></div>
+
+<div class="modal" *ngIf="addValueModalOpen" (click)="$event.stopPropagation()">
+  <h2><i class="fa-solid fa-wallet"></i> Adicionar valor</h2>
+
+  <p>Meta: <strong>{{ selectedGoal?.description }}</strong></p>
+
+  <label>Conta</label>
+  <select [(ngModel)]="selectedAccountId">
+    <option *ngFor="let a of accounts" [value]="a.id">{{ a.name }}</option>
+  </select>
+
+  <label>Valor</label>
+  <input type="number" [(ngModel)]="valueToAdd">
+
+  <div class="actions">
+    <button class="cancel" (click)="closeAddValueModal()">
+      <i class="fa-solid fa-xmark"></i> Cancelar
+    </button>
+    <button class="save" (click)="confirmAddValue()">
+      <i class="fa-solid fa-check"></i> Adicionar
+    </button>
+  </div>
+</div>
+
+<!-- MODAL SACAR -->
+<div class="backdrop" *ngIf="withdrawModalOpen" (click)="closeWithdrawModal()"></div>
+
+<div class="modal" *ngIf="withdrawModalOpen" (click)="$event.stopPropagation()">
+  <h2><i class="fa-solid fa-hand-holding-dollar"></i> Sacar valor da meta</h2>
+
+  <p>Meta: <strong>{{ selectedGoal?.description }}</strong></p>
+  <p>Saldo na meta: <strong>{{ selectedGoal?.accumulatedValue }}</strong></p>
+
+  <label>Conta para receber</label>
+  <select [(ngModel)]="selectedAccountId">
+    <option *ngFor="let a of accounts" [value]="a.id">{{ a.name }}</option>
+  </select>
+
+  <label>Valor a sacar</label>
+  <input type="number" [(ngModel)]="valueToWithdraw">
+
+  <div class="actions">
+    <button class="cancel" (click)="closeWithdrawModal()">
+      <i class="fa-solid fa-xmark"></i> Cancelar
+    </button>
+    <button class="save" (click)="confirmWithdraw()">
+      <i class="fa-solid fa-check"></i> Sacar
+    </button>
+  </div>
+</div>

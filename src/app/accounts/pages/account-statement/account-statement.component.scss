@@ -1,23 +1,15 @@
 :host {
   display: block;
   min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden !important;
 
-  /* IMAGEM DE FUNDO */
+  /* Fundo */
   background-image: url('../../../features/users/components/login/fundotrab.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-}
-
-.statement-container {
-  background: #ffffff;
-  padding: 2rem;
-  border-radius: 12px;
-  max-width: 900px;
-  margin: 30px auto;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-
 }
 
 .body {
@@ -26,8 +18,20 @@
   align-items: flex-start;
   padding-top: 40px;
   min-height: 100vh;
-
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
   background: rgba(0, 0, 0, 0.3);
+}
+
+.statement-container {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 900px;
+  width: calc(100% - 40px);
+  margin: 30px auto;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .loading,
@@ -37,47 +41,79 @@
   color: #666;
 }
 
-/* Tabela */
+/* ============================
+   TABELA
+============================= */
+
 .table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  table-layout: fixed; /* mantém colunas alinhadas */
+}
 
-  thead th {
-    background: #f2f2f2;
-    padding: 20px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-  }
+.table thead th {
+  background: #f2f2f2;
+  padding: 14px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  font-weight: 600;
+}
 
-  tbody td {
-    padding: 50px;
-    border-bottom: 1px solid #eee;
-  }
+.table tbody td {
+  padding: 14px; /* corrigido (antes era 65px) */
+  border-bottom: 1px solid #eee;
+  vertical-align: middle;
 }
 
 .text-right {
+  text-align: right !important;
+}
+
+/* ============================
+   COLUNAS
+============================= */
+
+.col-data {
+  width: 120px;
+}
+
+.col-descricao {
+  width: auto;
+}
+
+.col-tipo {
+  width: 180px;
+}
+
+.col-valor {
+  width: 120px;
+  text-align: right !important;
+}
+
+/* ============================
+   VALORES + / -
+============================= */
+
+.amount {
+  display: block;
+  min-width: 100px;
   text-align: right;
-}
-
-/* Badges de tipo */
-.type-badge {
-  padding: 4px 10px;
-  border-radius: 6px;
-  color: white;
   font-weight: 600;
-  text-transform: capitalize;
-
-  &.income { background: #16a34a; }
-  &.expense { background: #dc2626; }
-  &.transfer { background: #2563eb; }
 }
 
-/* Valores */
-.amount.income { color: #16a34a; }
-.amount.expense { color: #dc2626; }
+.amount.income {
+  color: #16a34a;
+}
 
-/* Botão voltar */
+.amount.expense {
+  color: #dc2626;
+}
+
+/* ============================
+   BOTÃO VOLTAR
+============================= */
+
 .back button {
   margin-top: 20px;
   padding: 10px 18px;
@@ -86,8 +122,9 @@
   border-radius: 8px;
   border: none;
   cursor: pointer;
+  transition: 0.2s;
+}
 
-  &:hover {
-    background: #333;
-  }
+.back button:hover {
+  background: #333;
 }

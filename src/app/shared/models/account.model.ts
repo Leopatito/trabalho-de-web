@@ -7,5 +7,7 @@ export interface Account {
   notes?: string;            
   transactions?: any[];
   userId?: number;
-  isActive: boolean;        
+  isActive: boolean;      
+  icon?: string | null;
+  
 }

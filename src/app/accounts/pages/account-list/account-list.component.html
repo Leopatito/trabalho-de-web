@@ -1,47 +1,45 @@
 <div class="account-list-container">
 
   <header class="topbar">
-  <div class="left-area">
+    <div class="left-area">
+      <div class="brand">Finanças Pessoais</div>
+    </div>
+  </header>
 
-    <div class="brand">Finanças Pessoais</div>
-  </div>
+  <nav class="sidebar" [class.collapsed]="isCollapsed">
+    <div class="sidebar-content">
 
-</header>
+      <button class="toggle-btn" (click)="toggleSidebar()">
+        <span class="material-icons">{{ isCollapsed ? 'menu' : 'close' }}</span>
+      </button>
 
-<nav class="sidebar" [class.collapsed]="isCollapsed">
-  <div class="sidebar-content">
-  
-    <button class="toggle-btn" (click)="toggleSidebar()">
-      <span class="material-icons">{{ isCollapsed ? 'menu' : 'close' }}</span>
-    </button>
+      <a routerLink="/dashboard" class="nav-item">
+        <span class="material-icons">home</span>
+        <span class="label">Dashboard</span>
+      </a>
 
-    <a routerLink="/dashboard" class="nav-item">
-      <span class="material-icons">home</span>
-      <span class="label">Dashboard</span>
-    </a>
+      <a routerLink="/accounts" class="nav-item">
+        <span class="material-icons">account_balance_wallet</span>
+        <span class="label">Minhas Contas</span>
+      </a>
 
-    <a routerLink="/accounts" class="nav-item">
-      <span class="material-icons">account_balance_wallet</span>
-      <span class="label">Minhas Contas</span>
-    </a>
+      <a routerLink="/goals" routerLinkActive="active" class="nav-item">
+        <span class="material-icons">receipt_long</span>
+        <span class="label">Metas</span>
+      </a>
 
-    <a routerLink="/goals" routerLinkActive="active" class="nav-item">
-      <span class="material-icons">receipt_long</span>
-      <span class="label">Metas</span>
-    </a>
+      <a routerLink="/profile" class="nav-item">
+        <span class="material-icons">person</span>
+        <span class="label">Perfil</span>
+      </a>
 
-    <a routerLink="/profile" class="nav-item">
-      <span class="material-icons">person</span>
-      <span class="label">Perfil</span>
-    </a>
+      <button class="nav-item logout" (click)="onLogout()">
+        <span class="material-icons">logout</span>
+        <span class="label">Sair</span>
+      </button>
 
-    <button class="nav-item logout" (click)="onLogout()">
-      <span class="material-icons">logout</span>
-      <span class="label">Sair</span>
-    </button>
-
-  </div>
-</nav>
+    </div>
+  </nav>
 
   <!-- Cabeçalho -->
   <div class="header">
@@ -59,17 +57,36 @@
 
   <!-- Cards das contas -->
   <div *ngIf="!loading && accounts.length > 0" class="accounts-grid">
-    
-    <div class="account-card" *ngFor="let acc of accounts">
 
-      <div class="account-name">{{ acc.name }}</div>
-      <div class="account-type">{{ getAccountTypeLabel(acc.type) }}</div>
+    <div 
+      class="account-card"
+      *ngFor="let acc of accounts"
+      [style.boxShadow]="'0 6px 15px ' + acc.color"
+    >
 
-      <div class="account-balance">
+      <div class="account-header">
+
+        <!-- Ícone opcional definido pelo usuário -->
+        <i *ngIf="acc.icon" 
+           [class]="acc.icon"
+           class="account-icon"
+           [style.color]="acc.color">
+        </i>
+
+        <div class="account-name" [style.color]="acc.color">
+          {{ acc.name }}
+        </div>
+
+      </div>
+
+      <div class="account-type">
+        {{ getAccountTypeLabel(acc.type) }}
+      </div>
+
+      <div class="account-balance" [style.color]="acc.color">
         {{ acc.currentBalance | currency:'BRL':'symbol':'1.2-2' }}
       </div>
 
-      <!-- Botões -->
       <div class="actions">
 
         <button class="btn btn-edit" (click)="edit(acc.id!)">

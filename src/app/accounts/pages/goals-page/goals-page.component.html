@@ -1,14 +1,12 @@
 <div class="goals-page-container" [class.sidebar-collapsed]="isCollapsed">
   <header class="topbar">
     <div class="left-area">
-
       <div class="brand">Finanças Pessoais</div>
     </div>
-
   </header>
+
   <nav class="sidebar" [class.collapsed]="isCollapsed">
     <div class="sidebar-content">
-    
       <button class="toggle-btn" (click)="toggleSidebar()">
         <span class="material-icons">{{ isCollapsed ? 'menu' : 'close' }}</span>
       </button>
@@ -37,7 +35,6 @@
         <span class="material-icons">logout</span>
         <span class="label">Sair</span>
       </button>
-
     </div>
   </nav>
 
@@ -45,7 +42,7 @@
   <div class="goals-container">
 
     <div class="header">
-      <h1><i class="fa-solid fa-bullseye"></i> Minhas Metas</h1>
+      <h1><i class="fa-solid"></i> Minhas Metas</h1>
 
       <button class="btn-add" type="button" (click)="openModal()">
         <i class="fa-solid fa-plus"></i> Nova Meta
@@ -65,18 +62,68 @@
     </div>
 
     <div class="goals-grid" *ngIf="goals.length > 0">
-      <div *ngFor="let g of goals" class="goal-card">
+
+      <!-- LOOP CORRIGIDO -->
+      <div *ngFor="let g of goals"
+        class="goal-card"
+        [ngClass]="{
+          'status-in-progress': g.status === 'EM_ANDAMENTO',
+          'status-completed': g.status === 'CONCLUIDA',
+          'status-expired': g.status === 'EXPIRADA',
+          'status-exceeded': g.status === 'EXCEDIDA'
+        }">
+
+        <!-- SACAR -->
+        <button
+          class="withdraw-btn"
+          (click)="openWithdrawModal(g)">
+          <i class="fa-solid fa-hand-holding-dollar"></i>
+          Sacar
+        </button>
+
         <div class="goal-header">
           <h3><i class="fa-solid fa-flag"></i> {{ g.description }}</h3>
-          <span class="type">{{ g.type }}</span>
+
+          <span class="status-badge"
+                [ngClass]="{
+                  'badge-in-progress': g.status === 'EM ANDAMENTO',
+                  'badge-completed': g.status === 'CONCLUIDA',
+                  'badge-expired': g.status === 'EXPIRADA',
+                  'badge-exceeded': g.status === 'EXCEDIDA'
+                }">
+            {{ g.status }}
+          </span>
         </div>
 
         <p><strong>Progresso:</strong> {{ g.currentValue }} / {{ g.targetValue }}</p>
-        <p><strong>Status:</strong> {{ g.status }}</p>
 
         <div class="progress-bar">
-          <div class="progress-fill" [style.width.%]="g.progress"></div>
+          <div 
+            class="progress-fill"
+            [ngClass]="{
+                'status-in-progress': g.status === 'EM_ANDAMENTO',
+                'status-completed': g.status === 'CONCLUIDA',
+                'status-expired': g.status === 'EXPIRADA',
+                'status-exceeded': g.status === 'EXCEDIDA'
+            }"
+            [style.width.%]="g.progress">
+          </div>
         </div>
+
+        <p class="status-info">
+          <i class="fa-solid fa-circle-info"></i>
+          Status: 
+          <strong 
+            class="status-text"
+            [ngClass]="{
+              'in-progress': g.status === 'EM ANDAMENTO',
+              'completed': g.status === 'CONCLUIDA',
+              'expired': g.status === 'EXPIRADA',
+              'exceeded': g.status === 'EXCEDIDA'
+            }">
+            {{ g.status }}
+          </strong>
+        </p>
 
         <div class="dates">
           <p><i class="fa-solid fa-calendar-day"></i> Início: {{ g.startDate | date }}</p>
@@ -91,10 +138,11 @@
           <i class="fa-solid fa-trash"></i> Excluir
         </button>
 
-      </div>
-    </div>
-  </div>
+      </div> 
 
+    </div> 
+
+  </div> 
 </div>
 
 <!-- MODAL NOVA META -->
@@ -122,6 +170,8 @@
     <option value="COMPRA">Compra</option>
     <option value="ORCAMENTO">Orçamento</option>
     <option value="INVESTIMENTO">Investimento</option>
+    <option value="LIMITE">Limite</option>
+
   </select>
 
   <div class="actions">
@@ -156,6 +206,33 @@
     </button>
     <button class="save" (click)="confirmAddValue()">
       <i class="fa-solid fa-check"></i> Adicionar
+    </button>
+  </div>
+</div>
+
+<!-- MODAL SACAR -->
+<div class="backdrop" *ngIf="withdrawModalOpen" (click)="closeWithdrawModal()"></div>
+
+<div class="modal" *ngIf="withdrawModalOpen" (click)="$event.stopPropagation()">
+  <h2><i class="fa-solid fa-hand-holding-dollar"></i> Sacar valor da meta</h2>
+
+  <p>Meta: <strong>{{ selectedGoal?.description }}</strong></p>
+  <p>Saldo na meta: <strong>{{ selectedGoal?.accumulatedValue }}</strong></p>
+
+  <label>Conta para receber</label>
+  <select [(ngModel)]="selectedAccountId">
+    <option *ngFor="let a of accounts" [value]="a.id">{{ a.name }}</option>
+  </select>
+
+  <label>Valor a sacar</label>
+  <input type="number" [(ngModel)]="valueToWithdraw">
+
+  <div class="actions">
+    <button class="cancel" (click)="closeWithdrawModal()">
+      <i class="fa-solid fa-xmark"></i> Cancelar
+    </button>
+    <button class="save" (click)="confirmWithdraw()">
+      <i class="fa-solid fa-check"></i> Sacar
     </button>
   </div>
 </div>

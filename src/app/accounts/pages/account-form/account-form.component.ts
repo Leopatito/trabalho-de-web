@@ -4,17 +4,14 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AccountsService } from '../../../core/services/accounts.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ACCOUNT_ICONS } from '../../../shared/icons/fontawesome-icons';
 
 @Component({
   selector: 'app-account-form',
   templateUrl: './account-form.component.html',
   standalone: true,
   styleUrls: ['./account-form.component.scss'],
-
-  imports: [
-    CommonModule,
-    ReactiveFormsModule
-  ]
+  imports: [CommonModule, ReactiveFormsModule]
 })
 export class AccountFormComponent implements OnInit {
 
@@ -22,9 +19,10 @@ export class AccountFormComponent implements OnInit {
   isEdit = false;
   accountId!: string;
   loading = false;
-  disableInitialBalance = false;
-
   originalName = '';
+
+  icons = ACCOUNT_ICONS;
+  selectedIcon: string | null = null;
 
   accountTypes = [
     { value: 'CHECKING', label: 'Conta Corrente' },
@@ -41,14 +39,19 @@ export class AccountFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       type: ['', Validators.required],
-      initialBalance: [0, Validators.required],
-      color: ['#000000', Validators.required],
-      icon: [''],
 
-      // 🔥 O backend OBRIGA esse campo → então ele PRECISA existir no form
+      initialBalance: [0, Validators.required],
+
+      currentBalance: [null],
+
+      color: ['#000000', Validators.required],
+
+      icon: [null],
+
       isActive: [true, Validators.required]
     });
 
@@ -67,18 +70,16 @@ export class AccountFormComponent implements OnInit {
       next: (acc) => {
 
         this.originalName = acc.name;
+        this.selectedIcon = acc.icon || null;
 
         this.form.patchValue({
           name: acc.name,
           type: acc.type,
           initialBalance: acc.initialBalance,
-          isActive: acc.isActive,  
+          currentBalance: acc.currentBalance,
+          icon: acc.icon,
+          isActive: acc.isActive
         });
-
-        if (acc.currentBalance !== acc.initialBalance) {
-          this.disableInitialBalance = true;
-          this.form.get('initialBalance')?.disable();
-        }
 
         this.loading = false;
       },
@@ -90,27 +91,23 @@ export class AccountFormComponent implements OnInit {
     if (this.form.invalid) return;
 
     const payload = this.form.getRawValue();
+    payload.icon = this.selectedIcon;
 
-    // 🔥 se não mudou o nome, não enviar name para evitar UNIQUE error
     if (this.isEdit && payload.name === this.originalName) {
       delete payload.name;
-    }
-
-    // 🔥 garantir que SEMPRE enviamos isActive
-    if (!('isActive' in payload) || payload.isActive === undefined) {
-      payload.isActive = true;
     }
 
     this.loading = true;
 
     if (this.isEdit) {
-      this.accountsService.update(Number(this.accountId), payload).subscribe(() => {
-        this.router.navigate(['/accounts']);
-      });
+      this.accountsService.update(Number(this.accountId), payload)
+        .subscribe(() => this.router.navigate(['/accounts']));
+
     } else {
-      this.accountsService.create(payload).subscribe(() => {
-        this.router.navigate(['/accounts']);
-      });
+      delete payload.currentBalance;
+
+      this.accountsService.create(payload)
+        .subscribe(() => this.router.navigate(['/accounts']));
     }
   }
 

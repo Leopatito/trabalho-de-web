@@ -20,50 +20,50 @@
       <table class="table">
         <thead>
           <tr>
-            <th>Data</th>
-            <th>Tipo</th>
-            <th>Categoria</th>
-            <th class="text-right">Valor</th>
-            <th>Descrição</th>
+            <th class="col-data">Data</th>
+            <th class="col-descricao">Descrição</th>
+            <th class="col-tipo">Tipo</th>
+            <th class="col-valor">Valor</th>
           </tr>
         </thead>
 
         <tbody>
+
           <tr *ngFor="let t of transactions">
+            
             <td>{{ t.date | date: "dd/MM/yyyy" }}</td>
 
-            <td>
-              <span class="type-badge"
-                [ngClass]="{
-                  'income': t.type === 'income',
-                  'expense': t.type === 'expense',
-                  'transfer': t.type === 'transfer'
-                }">
-                {{ t.type }}
-              </span>
-            </td>
+            <td>{{ t.description || '-' }}</td>
 
-            <td>{{ t.category?.name || '-' }}</td>
+            <td>
+              {{
+                t.type === 'INCOME'   ? 'Receita' :
+                t.type === 'EXPENSE'  ? 'Despesa' :
+                'Movimentação'
+              }}
+            </td>
 
             <td class="text-right">
-              R$
-              <span class="amount"
+              <span 
+                class="amount"
                 [ngClass]="{
-                  'income': t.type === 'income',
-                  'expense': t.type === 'expense'
-                }">
-                {{ t.amount | number : "1.2-2" }}
+                  'income': t.amount > 0,
+                  'expense': t.amount < 0
+                }"
+              >
+                R$
+                {{ t.amount | number : '1.2-2' }}
               </span>
             </td>
 
-            <td>{{ t.description || '-' }}</td>
           </tr>
 
           <tr *ngIf="transactions.length === 0">
-            <td colspan="5" class="no-data">
+            <td colspan="4" class="no-data">
               Nenhuma transação encontrada.
             </td>
           </tr>
+
         </tbody>
       </table>
 

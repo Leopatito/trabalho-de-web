@@ -1,4 +1,4 @@
-<main class = "body">  
+<main class="body">
   <div class="account-form-container">
     <h2>
       {{ isEdit ? 'Editar Conta' : 'Nova Conta' }}
@@ -6,22 +6,14 @@
 
     <form [formGroup]="form" (ngSubmit)="submit()">
 
-      <!-- Nome -->
       <div class="mb-4">
         <label>Nome</label>
-        <input
-          type="text"
-          formControlName="name"
-        />
-        <div
-          *ngIf="form.get('name')?.invalid && form.get('name')?.touched"
-          class="error-text"
-        >
+        <input type="text" formControlName="name" />
+        <div *ngIf="form.get('name')?.invalid && form.get('name')?.touched" class="error-text">
           O nome deve ter pelo menos 3 caracteres.
         </div>
       </div>
 
-      <!-- Tipo -->
       <div class="mb-4">
         <label>Tipo</label>
         <select formControlName="type">
@@ -31,63 +23,56 @@
           <option value="LOAN">Conta de Investimentos</option>
           <option value="OTHER">Outro</option>
         </select>
-        <div
-          *ngIf="form.get('type')?.invalid && form.get('type')?.touched"
-          class="error-text"
-        >
-          Selecione um tipo.
-        </div>
       </div>
 
-      <!-- Saldo Inicial -->
       <div class="mb-4" *ngIf="!isEdit">
         <label>Saldo Inicial</label>
-        <input
-          type="number"
-          formControlName="initialBalance"
-        />
-        <div
-          *ngIf="form.get('initialBalance')?.invalid && form.get('initialBalance')?.touched"
-          class="error-text"
-        >
-          Informe um valor válido.
-        </div>
+        <input type="number" formControlName="initialBalance" />
       </div>
 
-      <!-- Cor -->
+      <div class="mb-4" *ngIf="isEdit">
+        <label>Saldo Atual</label>
+        <input type="number" formControlName="currentBalance" />
+      </div>
+
       <div class="mb-4">
         <label>Cor</label>
-        <input
-          type="color"
-          formControlName="color"
-        />
+        <input type="color" formControlName="color" />
       </div>
 
-      <!-- Ícone -->
       <div class="mb-4">
         <label>Ícone</label>
-        <input
-          type="text"
-          placeholder="Ex: wallet, home, car..."
-          formControlName="icon"
-        />
+
+        <div class="icons-grid">
+
+          <div
+            class="icon-item no-icon-item"
+            [class.selected]="selectedIcon === null"
+            (click)="selectedIcon = null"
+          >
+            <span class="no-icon-text">Nenhum</span>
+          </div>
+
+          <div
+            *ngFor="let icon of icons"
+            class="icon-item"
+            [class.selected]="selectedIcon === icon"
+            (click)="selectedIcon = icon"
+          >
+            <i class="{{ icon }}"></i>
+          </div>
+
+        </div>
+
+        <small class="hint">Selecione um ícone (opcional)</small>
       </div>
 
-      <!-- Botões -->
       <div class="buttons">
-        <button
-          type="button"
-          class="cancel-btn"
-          (click)="cancel()"
-        >
+        <button type="button" class="cancel-btn" (click)="cancel()">
           Cancelar
         </button>
 
-        <button
-          class="save-btn"
-          type="submit"
-          [disabled]="form.invalid"
-        >
+        <button class="save-btn" type="submit" [disabled]="form.invalid">
           {{ isEdit ? 'Salvar Alterações' : 'Criar Conta' }}
         </button>
       </div>

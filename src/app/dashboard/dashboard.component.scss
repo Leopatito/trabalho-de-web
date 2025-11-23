@@ -1,13 +1,5 @@
-
-$sidebar-width: 240px;
-$sidebar-width-collapsed: 64px;
-$sidebar-bg: #022f5a;
 $sidebar-text: #ffffff;
-$sidebar-hover: rgba(255, 255, 255, 0.09);
-
-:host {
-  font-family: 'Roboto', sans-serif;
-}
+$sidebar-hover: rgba(255, 255, 255, 0.15);
 
 .layout {
   display: flex;
@@ -16,19 +8,77 @@ $sidebar-hover: rgba(255, 255, 255, 0.09);
   position: relative;
 }
 
+/* ============================================================
+   SIDEBAR (Recolhível)
+============================================================= */
 .sidebar {
-  width: 240px;
-  background: #013d7a;
-  color: #fff;
-  padding: 16px 12px;
-  box-sizing: border-box;
-  transition: width 0.3s ease, transform 0.3s ease;
-  overflow: hidden;
   position: relative;
+  left: 0;
+  height: calc(100vh - 64px);
+  width: 240px;  /* Largura da Sidebar Expandida */
+  background: #013d7a;
+  color: #ffffff;
+  padding: 20px 0;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.25s ease;
+  z-index: 100;
 }
 
-.layout.collapsed .sidebar {
-  width: 70px;
+/* Quando a sidebar for recolhida */
+.sidebar.collapsed {
+  width: 70px; /* Largura quando recolhida */
+}
+
+/* Conteúdo da Sidebar */
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+}
+
+/* Itens da Sidebar */
+.nav-item {
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.25s ease;
+  border-left: 4px solid transparent;
+
+  .material-icons {
+    font-size: 24px;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+}
+
+.sidebar.collapsed .nav-item .label {
+  display: none;
+}
+
+.sidebar.collapsed .nav-item {
+  justify-content: center;
+}
+
+/* Logout com estilo */
+.logout {
+  background: none;
+  border: none;
+  color: #fff;
+  text-align: left;
+
+  &:hover {
+    background: rgba(255, 0, 0, 0.25);
+  }
 }
 
 .toggle-btn {
@@ -163,8 +213,7 @@ $sidebar-hover: rgba(255, 255, 255, 0.09);
 }
 .app-header .logout:hover { background: rgba(255,255,255,0.04) }
 
-/* add spacing so header does not overlap the dashboard filters when sticky */
-// .dashboard-root { padding-top: 64px }
+
 
 .dashboard-root::before {
   content: '';

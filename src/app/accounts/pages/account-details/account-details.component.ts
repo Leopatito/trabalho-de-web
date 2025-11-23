@@ -5,17 +5,13 @@ import { CommonModule, DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-account-details',
-  standalone:true,
+  standalone: true,
   templateUrl: './account-details.component.html',
   styleUrls: ['./account-details.component.scss'],
 
-  imports: [
-    CommonModule
-  ],
+  imports: [CommonModule],
 
-  providers: [
-      DecimalPipe
-  ]
+  providers: [DecimalPipe]
 })
 export class AccountDetailsComponent implements OnInit {
 
@@ -32,7 +28,6 @@ export class AccountDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.accountId = this.route.snapshot.params['id'];
-
     this.loadData();
   }
 
@@ -42,7 +37,10 @@ export class AccountDetailsComponent implements OnInit {
     this.accountsService.getById(Number(this.accountId)).subscribe({
       next: (acc) => {
         this.account = acc;
-        this.transactions = acc.transactions || [];
+
+        // CORREÇÃO: garante array
+        this.transactions = Array.isArray(acc.transactions) ? acc.transactions : [];
+
         this.loading = false;
       },
       error: () => {

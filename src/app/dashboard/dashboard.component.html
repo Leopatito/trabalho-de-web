@@ -7,45 +7,41 @@
 
 <div class="layout" [class.collapsed]="isCollapsed">
 
-  <aside class="sidebar">
-    <!-- Botão para alternar o estado da sidebar -->
-    <button class="toggle-btn" (click)="toggleSidebar()">
-      <span class="material-icons">
-        {{ isCollapsed ? 'menu' : 'close' }}
-      </span>
-    </button>
+  <nav class="sidebar" [class.collapsed]="isCollapsed">
+    <div class="sidebar-content">
 
-    <!-- Menu de navegação -->
-    <nav class="menu">
-      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
+      <button class="toggle-btn" (click)="toggleSidebar()">
+        <span class="material-icons">{{ isCollapsed ? 'menu' : 'close' }}</span>
+      </button>
+
+      <a routerLink="/dashboard" class="nav-item">
         <span class="material-icons">home</span>
         <span class="label">Dashboard</span>
       </a>
 
-      <a routerLink="/accounts" routerLinkActive="active" class="nav-link">
+      <a routerLink="/accounts" class="nav-item">
         <span class="material-icons">account_balance_wallet</span>
         <span class="label">Minhas Contas</span>
       </a>
 
-      <a routerLink="/goals" routerLinkActive="active" class="nav-link">
+      <a routerLink="/goals" routerLinkActive="active" class="nav-item">
         <span class="material-icons">receipt_long</span>
         <span class="label">Metas</span>
       </a>
 
-      <a routerLink="/profile" routerLinkActive="active" class="nav-link">
+      <a routerLink="/profile" class="nav-item">
         <span class="material-icons">person</span>
         <span class="label">Perfil</span>
       </a>
 
-      <!-- Logout -->
       <button class="nav-item logout" (click)="onLogout()">
         <span class="material-icons">logout</span>
         <span class="label">Sair</span>
       </button>
-    </nav>
-  </aside>
 
-  <!-- CONTEÚDO PRINCIPAL -->
+    </div>
+  </nav>
+
   <main class="dashboard-root">
 
     <header class="filters">

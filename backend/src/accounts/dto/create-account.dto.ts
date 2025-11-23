@@ -39,9 +39,11 @@ export class CreateAccountDto {
   @IsHexColor()
   color: string;
 
-  @ApiProperty({ description: 'Icon of the category' })
+  @ApiProperty({
+    description: 'Icon of the account',
+    required: false,
+  })
   @IsString()
-  @IsNotEmpty()
   @IsOptional()
   icon?: string;
 }

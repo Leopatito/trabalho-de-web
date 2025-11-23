@@ -17,7 +17,6 @@
       <tr>
         <th>Data</th>
         <th>Descrição</th>
-        <th>Tipo</th>
         <th>Valor</th>
       </tr>
     </thead>
@@ -26,8 +25,16 @@
       <tr *ngFor="let t of transactions">
         <td>{{ t.date | date:'dd/MM/yyyy' }}</td>
         <td>{{ t.description }}</td>
-        <td>{{ t.type === 'INCOME' ? 'Receita' : 'Despesa' }}</td>
-        <td [ngClass]="t.type === 'INCOME' ? 'income' : 'expense'">
+
+        <td>
+          {{ 
+            t.type === 'INCOME' ? 'Receita' : 
+            t.type === 'EXPENSE' ? 'Despesa' : 
+            'Movimentação'
+          }}
+        </td>
+
+        <td [ngClass]="t.amount >= 0 ? 'income' : 'expense'">
           R$ {{ t.amount | number:'1.2-2' }}
         </td>
       </tr>

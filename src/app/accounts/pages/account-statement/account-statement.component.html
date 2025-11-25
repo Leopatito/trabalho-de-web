@@ -1,0 +1,78 @@
+<div class="body">
+
+  <div class="statement-container">
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="loading">
+      Carregando extrato...
+    </div>
+
+    <div *ngIf="!loading && account">
+      <h2>Extrato — {{ account.name }}</h2>
+
+      <p>
+        <strong>Saldo Atual:</strong>
+        R$ {{ account.currentBalance | number : "1.2-2" }}
+      </p>
+
+      <hr />
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="col-data">Data</th>
+            <th class="col-descricao">Descrição</th>
+            <th class="col-tipo">Tipo</th>
+            <th class="col-valor">Valor</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let t of transactions">
+            
+            <td>{{ t.date | date: "dd/MM/yyyy" }}</td>
+
+            <td>{{ t.description || '-' }}</td>
+
+            <td>
+              {{
+                t.type === 'INCOME'   ? 'Receita' :
+                t.type === 'EXPENSE'  ? 'Despesa' :
+                'Movimentação'
+              }}
+            </td>
+
+            <td class="text-right">
+              <span 
+                class="amount"
+                [ngClass]="{
+                  'income': t.amount > 0,
+                  'expense': t.amount < 0
+                }"
+              >
+                R$
+                {{ t.amount | number : '1.2-2' }}
+              </span>
+            </td>
+
+          </tr>
+
+          <tr *ngIf="transactions.length === 0">
+            <td colspan="4" class="no-data">
+              Nenhuma transação encontrada.
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+
+      <div class="back">
+        <button routerLink="/accounts">Voltar</button>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

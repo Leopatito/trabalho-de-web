@@ -20,6 +20,11 @@ export * from './dashboard.component';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
+  isCollapsed: boolean = true;
+
+  toggleSidebar() {
+    this.isCollapsed = !this.isCollapsed;
+  }
   periodReport: any = null;
   monthlySummary: any = null;
   accounts: any[] = [];

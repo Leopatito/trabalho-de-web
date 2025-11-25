@@ -1,0 +1,82 @@
+<main class="body">
+  <div class="account-form-container">
+    <h2>
+      {{ isEdit ? 'Editar Conta' : 'Nova Conta' }}
+    </h2>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+
+      <div class="mb-4">
+        <label>Nome</label>
+        <input type="text" formControlName="name" />
+        <div *ngIf="form.get('name')?.invalid && form.get('name')?.touched" class="error-text">
+          O nome deve ter pelo menos 3 caracteres.
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label>Tipo</label>
+        <select formControlName="type">
+          <option value="">Selecione</option>
+          <option value="CHECKING">Conta Corrente</option>
+          <option value="SAVINGS">Conta Poupança</option>
+          <option value="LOAN">Conta de Investimentos</option>
+          <option value="OTHER">Outro</option>
+        </select>
+      </div>
+
+      <div class="mb-4" *ngIf="!isEdit">
+        <label>Saldo Inicial</label>
+        <input type="number" formControlName="initialBalance" />
+      </div>
+
+      <div class="mb-4" *ngIf="isEdit">
+        <label>Saldo Atual</label>
+        <input type="number" formControlName="currentBalance" />
+      </div>
+
+      <div class="mb-4">
+        <label>Cor</label>
+        <input type="color" formControlName="color" />
+      </div>
+
+      <div class="mb-4">
+        <label>Ícone</label>
+
+        <div class="icons-grid">
+
+          <div
+            class="icon-item no-icon-item"
+            [class.selected]="selectedIcon === null"
+            (click)="selectedIcon = null"
+          >
+            <span class="no-icon-text">Nenhum</span>
+          </div>
+
+          <div
+            *ngFor="let icon of icons"
+            class="icon-item"
+            [class.selected]="selectedIcon === icon"
+            (click)="selectedIcon = icon"
+          >
+            <i class="{{ icon }}"></i>
+          </div>
+
+        </div>
+
+        <small class="hint">Selecione um ícone (opcional)</small>
+      </div>
+
+      <div class="buttons">
+        <button type="button" class="cancel-btn" (click)="cancel()">
+          Cancelar
+        </button>
+
+        <button class="save-btn" type="submit" [disabled]="form.invalid">
+          {{ isEdit ? 'Salvar Alterações' : 'Criar Conta' }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+</main>

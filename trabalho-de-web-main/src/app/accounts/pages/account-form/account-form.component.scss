@@ -1,0 +1,113 @@
+:host {
+  display: block;
+  min-height: 100vh;
+
+  /* IMAGEM DE FUNDO */
+  background-image: url('../../../features/users/components/login/fundotrab.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed; // fundo fixo
+}
+
+/* CONTEÚDO DA PÁGINA */
+.body {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 40px;
+  min-height: 100vh;
+
+  /* overlay leve para não apagar o fundo */
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* CARD DO FORMULÁRIO */
+.account-form-container {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 30px;
+  border-radius: 12px;
+  width: 420px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+
+  h2 {
+    font-weight: 700;
+    font-size: 1.6rem;
+    margin-bottom: 1.5rem;
+    color: #2a2a2a;
+  }
+
+  label {
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    display: block;
+    color: #333;
+  }
+
+  input,
+  select {
+    border: 1px solid #d6d6d6;
+    padding: 0.65rem 0.9rem;
+    border-radius: 8px;
+    width: 100%;
+    transition: all 0.2s ease;
+    background: #fafafa;
+
+    &:focus {
+      border-color: #4caf50;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.25);
+      outline: none;
+    }
+  }
+
+  input[type="color"] {
+    padding: 0.3rem;
+    height: 45px;
+    cursor: pointer;
+  }
+
+  .error-text {
+    color: #d93025;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+  }
+
+  /* BOTÕES */
+  .buttons {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: end;
+    gap: 0.8rem;
+
+    button {
+      padding: 0.6rem 1.4rem;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+
+      &.cancel-btn {
+        background: #6c757d;
+        color: #fff;
+
+        &:hover {
+          background: #5a6268;
+        }
+      }
+
+      &.save-btn {
+        background: #4caf50;
+        color: #fff;
+
+        &:hover {
+          background: #449d48;
+        }
+
+        &:disabled {
+          opacity: 0.65;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+}

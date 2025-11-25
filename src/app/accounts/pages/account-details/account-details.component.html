@@ -1,0 +1,52 @@
+<div class="container" *ngIf="!loading && account">
+
+  <h2>Extrato da Conta</h2>
+
+  <div class="account-box">
+    <p><strong>Nome:</strong> {{ account.name }}</p>
+    <p><strong>Tipo:</strong> {{ account.type }}</p>
+    <p><strong>Saldo Inicial:</strong> R$ {{ account.initialBalance | number:'1.2-2' }}</p>
+    <p><strong>Saldo Atual:</strong> R$ {{ account.currentBalance | number:'1.2-2' }}</p>
+    <p><strong>Observações:</strong> {{ account.description || 'Nenhuma' }}</p>
+  </div>
+
+  <h3>Lançamentos</h3>
+
+  <table class="table" *ngIf="transactions.length > 0; else noData">
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Descrição</th>
+        <th>Valor</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let t of transactions">
+        <td>{{ t.date | date:'dd/MM/yyyy' }}</td>
+        <td>{{ t.description }}</td>
+
+        <td>
+          {{ 
+            t.type === 'INCOME' ? 'Receita' : 
+            t.type === 'EXPENSE' ? 'Despesa' : 
+            'Movimentação'
+          }}
+        </td>
+
+        <td [ngClass]="t.amount >= 0 ? 'income' : 'expense'">
+          R$ {{ t.amount | number:'1.2-2' }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <ng-template #noData>
+    <p class="empty">Nenhum lançamento encontrado.</p>
+  </ng-template>
+
+  <button class="btn back" (click)="back()">Voltar</button>
+
+</div>
+
+<div *ngIf="loading" class="loading">Carregando...</div>

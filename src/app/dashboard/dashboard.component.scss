@@ -1,10 +1,99 @@
+$sidebar-text: #ffffff;
+$sidebar-hover: rgba(255, 255, 255, 0.15);
 
-:host {
-  font-family: 'Roboto', sans-serif;
+.layout {
+  display: flex;
+  width: 100%;
+  min-height: calc(100vh - 70px); /* abaixo do header */
+  position: relative;
+}
+
+/* ============================================================
+   SIDEBAR (Recolhível)
+============================================================= */
+.sidebar {
+  position: relative;
+  left: 0;
+  height: calc(100vh - 64px);
+  width: 240px;  /* Largura da Sidebar Expandida */
+  background: #013d7a;
+  color: #ffffff;
+  padding: 20px 0;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.25s ease;
+  z-index: 100;
+}
+
+/* Quando a sidebar for recolhida */
+.sidebar.collapsed {
+  width: 70px; /* Largura quando recolhida */
+}
+
+/* Conteúdo da Sidebar */
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+}
+
+/* Itens da Sidebar */
+.nav-item {
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.25s ease;
+  border-left: 4px solid transparent;
+
+  .material-icons {
+    font-size: 24px;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+}
+
+.sidebar.collapsed .nav-item .label {
+  display: none;
+}
+
+.sidebar.collapsed .nav-item {
+  justify-content: center;
+}
+
+/* Logout com estilo */
+.logout {
+  background: none;
+  border: none;
+  color: #fff;
+  text-align: left;
+
+  &:hover {
+    background: rgba(255, 0, 0, 0.25);
+  }
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 22px;
+  margin-bottom: 20px;
 }
 
 .dashboard-root {
+  flex: 1;
   padding: 1rem;
+  transition: padding .25s ease;
   /* configurable colors */
   --heading-color: #ffffff; /* headings, titles */
   --muted-color: #dddddd;   /* muted text */
@@ -25,6 +114,75 @@
   /* optional dim overlay using a pseudo-element for readability */
   position: relative;
   box-sizing: border-box;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 6px;
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-link.active {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Esconde labels quando recolhida */
+.layout.collapsed .nav-link .label {
+  display: none;
+}
+
+.layout.collapsed .nav-link {
+  justify-content: center;
+}
+
+.side-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: $sidebar-text;
+    text-decoration: none;
+    font-size: 15px;
+    transition: background .2s;
+
+    &:hover {
+      background: $sidebar-hover;
+    }
+
+    &.active {
+      background: rgba(255,255,255,0.18);
+      font-weight: 600;
+    }
+
+    .material-icons {
+      font-size: 22px;
+    }
+
+    .item-text {
+      transition: opacity .2s ease;
+      white-space: nowrap;
+    }
+  }
 }
 
 /* App header (will be added globally later; currently applied to dashboard only) */
@@ -55,8 +213,7 @@
 }
 .app-header .logout:hover { background: rgba(255,255,255,0.04) }
 
-/* add spacing so header does not overlap the dashboard filters when sticky */
-// .dashboard-root { padding-top: 64px }
+
 
 .app-header .avatar-img {
   width: 40px;
@@ -186,7 +343,16 @@
   border-radius: 6px;
   background: #fff;
 }
+.logout {
+  background: none;
+  border: none;
+  color: #fff;
+  text-align: left;
 
+  &:hover {
+    background: rgba(255, 0, 0, 0.25);
+  }
+}
 .cards {
   display: flex;
   gap: 1rem;

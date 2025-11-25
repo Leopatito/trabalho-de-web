@@ -1,0 +1,22 @@
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  height: 60px;
+  background: #004385; /* slightly darker than #004080 */
+  color: #fff;
+}
+.app-header .brand { display: flex; align-items: center; gap: 8px }
+.app-header .brand .brand-text { font-weight: 600; font-size: 1.05rem }
+.app-header .logout { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.08); padding: 6px 10px; border-radius: 6px }
+.app-header .logout:hover { background: rgba(255,255,255,0.04) }
+.app-header .avatar-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 2px rgba(255,255,255,0.02); transition: transform 120ms ease, box-shadow 120ms ease; cursor: pointer }
+.app-header .avatar-img:hover { transform: scale(1.06); box-shadow: 0 6px 18px rgba(0,0,0,0.35) }
+
+.profile-menu { position: absolute; top: 56px; left: 16px; background: #fff; color: #111827; border-radius: 8px; padding: 8px; min-width: 200px; box-shadow: 0 6px 18px rgba(16,24,40,0.12); z-index: 80; }
+.profile-menu .menu-item { display: block; width: 100%; text-align: left; padding: 10px 12px; background: transparent; border: 0; border-radius: 6px; cursor: pointer }
+.profile-menu .menu-item:hover { background: #f3f4f6 }
+.profile-menu::before { content: ''; position: absolute; width: 12px; height: 12px; transform: rotate(45deg); background: #fff; top: -6px; left: 28px; box-shadow: -2px -2px 6px rgba(0,0,0,0.02); }
+.profile-menu .profile-name { text-align: center; font-weight: 600; padding: 6px 0 }
+.profile-menu .profile-separator { height: 1px; background: #e6e7eb; margin: 8px 0; border-radius: 1px }

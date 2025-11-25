@@ -60,18 +60,11 @@ export class DashboardComponent implements OnInit {
   monthlyChartOptions: ChartOptions = { responsive: true, maintainAspectRatio: false };
   loading = false;
   error: string | null = null;
+  // header/profile are handled by the global Header component now
 
   constructor(private dashboard: DashboardService, private authService: AuthService, private router: Router) {}
 
-  onLogout() {
-    try {
-      this.authService.logout();
-    } catch (e) {
-      console.warn('Falha desconhecida no logout', e);
-    }
-    // Navigate to login page after logout
-    this.router.navigate(['/login']);
-  }
+
 
   ngOnInit(): void {
     this.loadAccounts();
@@ -79,6 +72,11 @@ export class DashboardComponent implements OnInit {
     this.loadOverviewData();
     // Pie chart is controlled by the period selector (default '1m')
     this.loadPieChart();
+    // Header component handles profile/avatar now
+  }
+
+  ngOnDestroy(): void {
+    // nothing to cleanup here related to header
   }
 
   setPeriod(period: string) {
@@ -113,6 +111,8 @@ export class DashboardComponent implements OnInit {
       console.warn('Failed to load accounts', err);
     });
   }
+
+  // Header-related methods were moved to the global HeaderComponent
 
   onAccountChange(value: string | number) {
     const id = value === '' || value === null ? null : Number(value);

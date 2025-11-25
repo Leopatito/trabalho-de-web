@@ -36,6 +36,14 @@ export class AuthService {
     return this.http.post<User>(`${this.apiUrl}/users`, userData);
   }
 
+  getProfile(): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/users/me`);
+  }
+
+  updateProfile(update: Partial<User>): Observable<User> {
+    return this.http.patch<User>(`${this.apiUrl}/users/me`, update);
+  }
+
   logout(): void {
     localStorage.removeItem('token');
   }

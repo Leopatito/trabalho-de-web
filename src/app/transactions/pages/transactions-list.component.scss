@@ -206,7 +206,7 @@ body {
   label {
     font-size: 12px;
     font-weight: 600;
-    color: #ccc;
+    color: #ffffff;
     text-transform: uppercase;
   }
 
@@ -216,7 +216,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 4px;
     background: rgba(255, 255, 255, 0.1);
-    color: #fff;
+    color: #ffffff;
     font-size: 14px;
     transition: all 0.3s ease;
 
@@ -234,10 +234,15 @@ body {
 
   select {
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23fff' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23000' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 8px center;
     padding-right: 28px;
+  }
+
+  option {
+    color: #000000;
+    background-color: #ffffff;
   }
 }
 
@@ -273,7 +278,7 @@ body {
   td {
     padding: 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    color: #fff;
+    color: #ffffff;
   }
 
   tbody tr {
@@ -535,7 +540,7 @@ form {
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 4px;
     background: rgba(255, 255, 255, 0.05);
-    color: #fff;
+    color: #ffffff;
     font-size: 14px;
     transition: all 0.3s ease;
 
@@ -553,12 +558,28 @@ form {
 
   select {
     appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23000' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 28px;
+  }
+
+  option {
+    color: #000;
+    background-color: #fff;
+  }
+}
+
+
+
+  select {
+    appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23fff' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 8px center;
     padding-right: 28px;
   }
-}
+
 
 /* Type Buttons */
 .type-buttons {

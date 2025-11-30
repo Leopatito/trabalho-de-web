@@ -228,7 +228,10 @@
           <!-- Categoria (se não for transferência) -->
           <div class="form-group" *ngIf="transactionForm.type !== 'TRANSFER'">
             <label>Categoria</label>
-            <input type="text" [(ngModel)]="transactionForm.categoryId" name="categoryId" placeholder="ID da categoria">
+            <select [(ngModel)]="transactionForm.categoryId" name="categoryId">
+              <option [value]="null">Selecione</option>
+              <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+            </select>
           </div>
 
           <!-- Conta Destino (se for transferência) -->

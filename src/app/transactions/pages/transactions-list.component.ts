@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { TransactionService } from '../../core/services/transaction.service';
 import { AccountsService } from '../../core/services/accounts.service';
+import { CategoriesService } from '../../features/categories/categories.service';
 
 @Component({
   selector: 'app-transactions-list',
@@ -53,11 +54,13 @@ export class TransactionsListComponent implements OnInit {
   constructor(
     private transactionService: TransactionService,
     private accountsService: AccountsService,
+    private categoriesService: CategoriesService,
     private router: Router
   ) {}
 
   ngOnInit() {
     this.loadAccounts();
+    this.loadCategories();
     this.loadTransactions();
   }
 
@@ -69,6 +72,17 @@ export class TransactionsListComponent implements OnInit {
       error: (err) => {
         console.error('Erro ao carregar contas', err);
         this.error = 'Erro ao carregar contas';
+      }
+    });
+  }
+
+  loadCategories() {
+    this.categoriesService.listAll().subscribe({
+      next: (res: any) => {
+        this.categories = res || [];
+      },
+      error: (err) => {
+        console.error('Erro ao carregar categorias', err);
       }
     });
   }
@@ -200,7 +214,7 @@ export class TransactionsListComponent implements OnInit {
       next: () => {
         this.loadTransactions();
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Erro ao excluir', err);
         this.error = 'Erro ao excluir lançamento';
       }
@@ -223,6 +237,12 @@ export class TransactionsListComponent implements OnInit {
       'TRANSFER': 'transfer'
     };
     return typeClass[type] || '';
+  }
+
+  getCategoryName(categoryId: number | null): string {
+    if (!categoryId) return '-';
+    const category = this.categories.find(c => c.id === categoryId);
+    return category ? category.name : '-';
   }
 
   // Pagination

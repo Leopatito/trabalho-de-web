@@ -105,24 +105,24 @@ body {
   margin-bottom: 20px;
 }
 /* ============================================================
-   CONTEÚDO PRINCIPAL 
+   CONTEÚDO PRINCIPAL
 ============================================================= */
 .account-list-container > .header,
 .account-list-container > .loading,
 .account-list-container > .accounts-grid,
 .account-list-container > .empty {
-  margin-left: 240px; 
+  margin-left: 240px;
   transition: margin-left 0.25s ease;
   padding: 5px;
-  padding-top: -30px; 
+  padding-top: -30px;
   padding-bottom: -3000px;
 }
 
 .sidebar.collapsed ~ .header,
-.sidebar.collapsed ~ .loading, 
+.sidebar.collapsed ~ .loading,
 .sidebar.collapsed ~ .accounts-grid,
 .sidebar.collapsed ~ .empty {
-  margin-left: 70px; 
+  margin-left: 70px;
 }
 /* ============================================================
    TOPBAR (Cabeçalho)
@@ -191,7 +191,7 @@ body {
 .loading {
   font-size: 1rem;
   font-weight: 500;
-  color: #444;
+  color: #ffffff;
 }
 
 /* ============================================================
@@ -303,7 +303,7 @@ body {
 ============================================================= */
 .empty {
   font-size: 1.1rem;
-  color: #555;
+  color: #ffffff;
   text-align: center;
   margin-top: 40px;
 }

@@ -1,8 +1,5 @@
 <header class="app-header">
   <div class="brand">Finanças Pessoais</div>
-  <div class="header-actions">
-    <button class="logout" (click)="onLogout()">Sair</button>
-  </div>
 </header>
 
 <div class="layout" [class.collapsed]="isCollapsed">
@@ -27,6 +24,16 @@
       <a routerLink="/goals" routerLinkActive="active" class="nav-item">
         <span class="material-icons">receipt_long</span>
         <span class="label">Metas</span>
+      </a>
+
+      <a routerLink="/transactions" class="nav-item">
+        <span class="material-icons">rocket_launch</span>
+        <span class="label">Lançamentos</span>
+      </a>
+
+      <a routerLink="/categories" class="nav-item">
+        <span class="material-icons">category</span>
+        <span class="label">Categorias</span>
       </a>
 
       <a routerLink="/profile" class="nav-item">
@@ -64,7 +71,7 @@
 
       <div class="account-filter">
         <label>Conta</label>
-        <select #accountSelect (change)="onAccountChange(accountSelect.value)" 
+        <select #accountSelect (change)="onAccountChange(accountSelect.value)"
           [value]="selectedAccountId !== null ? selectedAccountId : ''">
           <option value="">Todas</option>
           <option *ngFor="let a of accounts" [value]="a.id">{{ a.name }}</option>

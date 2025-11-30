@@ -1,0 +1,259 @@
+<div class="transactions-container" [class.sidebar-collapsed]="isCollapsed">
+
+  <!-- Header -->
+  <header class="topbar">
+    <div class="left-area">
+      <div class="brand">Finanças Pessoais</div>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <nav class="sidebar" [class.collapsed]="isCollapsed">
+    <div class="sidebar-content">
+
+      <button class="toggle-btn" (click)="toggleSidebar()">
+        <span class="material-icons">{{ isCollapsed ? 'menu' : 'close' }}</span>
+      </button>
+
+      <a routerLink="/dashboard" class="nav-item">
+        <span class="material-icons">home</span>
+        <span class="label">Dashboard</span>
+      </a>
+
+      <a routerLink="/accounts" class="nav-item">
+        <span class="material-icons">account_balance_wallet</span>
+        <span class="label">Minhas Contas</span>
+      </a>
+
+      <a routerLink="/goals" class="nav-item">
+        <span class="material-icons">receipt_long</span>
+        <span class="label">Metas</span>
+      </a>
+
+      <a routerLink="/transactions" class="nav-item active">
+        <span class="material-icons">rocket_launch</span>
+        <span class="label">Lançamentos</span>
+      </a>
+
+      <a routerLink="/categories" class="nav-item">
+        <span class="material-icons">category</span>
+        <span class="label">Categorias</span>
+      </a>
+
+      <a routerLink="/profile" class="nav-item">
+        <span class="material-icons">person</span>
+        <span class="label">Perfil</span>
+      </a>
+
+      <button class="nav-item logout" (click)="onLogout()">
+        <span class="material-icons">logout</span>
+        <span class="label">Sair</span>
+      </button>
+
+    </div>
+  </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1>Lançamentos</h1>
+      <button class="btn-new" (click)="openModal()">
+        + Novo Lançamento
+      </button>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-section">
+      <div class="filter-group">
+        <label>Conta</label>
+        <select [(ngModel)]="selectedAccountId" (change)="onFilterChange()">
+          <option [value]="null">Todas</option>
+          <option *ngFor="let acc of accounts" [value]="acc.id">{{ acc.name }}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Tipo</label>
+        <select [(ngModel)]="selectedType" (change)="onFilterChange()">
+          <option value="">Todos</option>
+          <option value="INCOME">Receita</option>
+          <option value="EXPENSE">Despesa</option>
+          <option value="TRANSFER">Transferência</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Data Início</label>
+        <input type="date" [(ngModel)]="startDate" (change)="onFilterChange()">
+      </div>
+
+      <div class="filter-group">
+        <label>Data Fim</label>
+        <input type="date" [(ngModel)]="endDate" (change)="onFilterChange()">
+      </div>
+    </div>
+
+    <!-- Loading / Error -->
+    <div *ngIf="loading" class="loading">
+      Carregando lançamentos...
+    </div>
+
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+    </div>
+
+    <!-- Transactions Table -->
+    <div *ngIf="!loading && transactions.length > 0" class="table-container">
+      <table class="transactions-table">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Descrição</th>
+            <th>Categoria</th>
+            <th>Conta</th>
+            <th>Valor</th>
+            <th>Tipo</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tx of paginatedTransactions" [class]="'type-' + getTypeClass(tx.type)">
+            <td>{{ tx.date | date:'dd/MM/yyyy' }}</td>
+            <td>{{ tx.description }}</td>
+            <td>{{ tx.category?.name || '-' }}</td>
+            <td>{{ tx.account?.name || '-' }}</td>
+            <td [class.negative]="tx.type === 'EXPENSE'">
+              {{ tx.type === 'EXPENSE' ? '-' : '+' }} {{ tx.amount | number:'1.2-2' }}
+            </td>
+            <td>
+              <span [class]="'badge badge-' + getTypeClass(tx.type)">
+                {{ getTypeLabel(tx.type) }}
+              </span>
+            </td>
+            <td>
+              <button class="btn-action btn-edit" (click)="openModal(tx)" title="Editar">
+                <span class="material-icons">edit</span>
+              </button>
+              <button class="btn-action btn-delete" (click)="deleteTransaction(tx.id)" title="Excluir">
+                <span class="material-icons">delete</span>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Pagination -->
+      <div class="pagination" *ngIf="totalPages > 1">
+        <button (click)="prevPage()" [disabled]="currentPage === 1">
+          <span class="material-icons">chevron_left</span>
+        </button>
+        <span *ngFor="let page of [].constructor(totalPages); let i = index"
+              [class.active]="currentPage === i + 1">
+          <button (click)="goToPage(i + 1)">{{ i + 1 }}</button>
+        </span>
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages">
+          <span class="material-icons">chevron_right</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && transactions.length === 0" class="empty-state">
+      <span class="material-icons">receipt</span>
+      <p>Nenhum lançamento encontrado</p>
+    </div>
+
+  <!-- Modal -->
+  <div *ngIf="modalOpen" class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <h2>{{ editingTransaction ? 'Editar Lançamento' : 'Novo Lançamento' }}</h2>
+        <button class="close-btn" (click)="closeModal()">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form (ngSubmit)="saveTransaction()">
+
+          <!-- Type Selection -->
+          <div class="form-group">
+            <label>Tipo de Lançamento</label>
+            <div class="type-buttons">
+              <button type="button"
+                      [class.active]="transactionForm.type === 'INCOME'"
+                      (click)="transactionForm.type = 'INCOME'">
+                <span class="material-icons">arrow_downward</span> Receita
+              </button>
+              <button type="button"
+                      [class.active]="transactionForm.type === 'EXPENSE'"
+                      (click)="transactionForm.type = 'EXPENSE'">
+                <span class="material-icons">arrow_upward</span> Despesa
+              </button>
+              <button type="button"
+                      [class.active]="transactionForm.type === 'TRANSFER'"
+                      (click)="transactionForm.type = 'TRANSFER'">
+                <span class="material-icons">swap_horiz</span> Transferência
+              </button>
+            </div>
+          </div>
+
+          <!-- Descrição -->
+          <div class="form-group">
+            <label>Descrição</label>
+            <input type="text" [(ngModel)]="transactionForm.description" name="description" required>
+          </div>
+
+          <!-- Valor -->
+          <div class="form-group">
+            <label>Valor</label>
+            <input type="number" [(ngModel)]="transactionForm.amount" name="amount" step="0.01" required>
+          </div>
+
+          <!-- Data -->
+          <div class="form-group">
+            <label>Data</label>
+            <input type="date" [(ngModel)]="transactionForm.date" name="date" required>
+          </div>
+
+          <!-- Conta -->
+          <div class="form-group">
+            <label>Conta</label>
+            <select [(ngModel)]="transactionForm.accountId" name="accountId" required>
+              <option [value]="null">Selecione</option>
+              <option *ngFor="let acc of accounts" [value]="acc.id">{{ acc.name }}</option>
+            </select>
+          </div>
+
+          <!-- Categoria (se não for transferência) -->
+          <div class="form-group" *ngIf="transactionForm.type !== 'TRANSFER'">
+            <label>Categoria</label>
+            <input type="text" [(ngModel)]="transactionForm.categoryId" name="categoryId" placeholder="ID da categoria">
+          </div>
+
+          <!-- Conta Destino (se for transferência) -->
+          <div class="form-group" *ngIf="transactionForm.type === 'TRANSFER'">
+            <label>Transferir Para</label>
+            <select [(ngModel)]="transactionForm.destinationAccountId" name="destinationAccountId">
+              <option [value]="null">Selecione</option>
+              <option *ngFor="let acc of accounts" [value]="acc.id">{{ acc.name }}</option>
+            </select>
+          </div>
+
+          <!-- Actions -->
+          <div class="form-actions">
+            <button type="submit" class="btn-submit">
+              {{ editingTransaction ? 'Atualizar' : 'Criar' }}
+            </button>
+            <button type="button" class="btn-cancel" (click)="closeModal()">
+              Cancelar
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+</div>

@@ -141,7 +141,7 @@ body {
 }
 
 /* ============================================================
-   CONTEÚDO PRINCIPAL 
+   CONTEÚDO PRINCIPAL
 ============================================================= */
 .account-list-container > .header,
 .account-list-container > .loading,
@@ -156,7 +156,7 @@ body {
 
 /* Quando sidebar está recolhida */
 .sidebar.collapsed ~ .header,
-.sidebar.collapsed ~ .loading, 
+.sidebar.collapsed ~ .loading,
 .sidebar.collapsed ~ .accounts-grid,
 .sidebar.collapsed ~ .empty {
   margin-left: 70px; /* Largura da sidebar recolhida */
@@ -382,26 +382,26 @@ body {
   }
 }
 
-.badge-in-progress { background: #0277bd; } 
-.badge-completed   { background: #2ecc71; }   
-.badge-expired     { background: #e74c3c; }   
-.badge-exceeded    { background: #f1c40f; color: #000; } 
+.badge-in-progress { background: #0277bd; }
+.badge-completed   { background: #2ecc71; }
+.badge-expired     { background: #e74c3c; }
+.badge-exceeded    { background: #f1c40f; color: #000; }
 .status-text {
   font-weight: bold;
 }
 
 .status-text.in-progress {
-  color: #0277bd;  
+  color: #0277bd;
 }
 
 .status-text.completed {
-  color: #2ecc71;  
+  color: #2ecc71;
 }
 
 .status-text.expired {
-  color: #e74c3c;  
+  color: #e74c3c;
 }
 
 .status-text.exceeded {
-  color: #f1c40f;  
+  color: #f1c40f;
 }

@@ -1,0 +1,90 @@
+<div class="categories-container" [class.sidebar-collapsed]="isCollapsed">
+
+  <!-- Header -->
+  <header class="topbar">
+    <div class="left-area">
+      <div class="brand">Finanças Pessoais</div>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <nav class="sidebar" [class.collapsed]="isCollapsed">
+    <div class="sidebar-content">
+
+      <button class="toggle-btn" (click)="toggleSidebar()">
+        <span class="material-icons">{{ isCollapsed ? 'menu' : 'close' }}</span>
+      </button>
+
+      <a routerLink="/dashboard" class="nav-item">
+        <span class="material-icons">home</span>
+        <span class="label">Dashboard</span>
+      </a>
+
+      <a routerLink="/accounts" class="nav-item">
+        <span class="material-icons">account_balance_wallet</span>
+        <span class="label">Minhas Contas</span>
+      </a>
+
+      <a routerLink="/goals" class="nav-item">
+        <span class="material-icons">receipt_long</span>
+        <span class="label">Metas</span>
+      </a>
+
+      <a routerLink="/transactions" class="nav-item">
+        <span class="material-icons">rocket_launch</span>
+        <span class="label">Lançamentos</span>
+      </a>
+
+      <a routerLink="/categories" class="nav-item active">
+        <span class="material-icons">category</span>
+        <span class="label">Categorias</span>
+      </a>
+
+      <a routerLink="/profile" class="nav-item">
+        <span class="material-icons">person</span>
+        <span class="label">Perfil</span>
+      </a>
+
+      <button class="nav-item logout" (click)="onLogout()">
+        <span class="material-icons">logout</span>
+        <span class="label">Sair</span>
+      </button>
+
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="categories-main">
+
+    <div class="categories-root">
+      <h2>Gerenciar Categorias</h2>
+      <div class="actions">
+        <button class="btn-new" (click)="newCategory()">+ Nova Categoria</button>
+      </div>
+
+      <div *ngIf="loading">Carregando...</div>
+      <div *ngIf="error" class="error">{{ error }}</div>
+
+      <div *ngIf="editing">
+        <h3>{{ editModel?.id ? 'Editar Categoria' : 'Criar Categoria' }}</h3>
+        <app-category-form [model]="editModel" [existing]="categories" (saved)="onSaved($event)" (cancelled)="onCancel()"></app-category-form>
+      </div>
+
+      <ul class="list">
+        <li *ngFor="let c of categories">
+          <div class="meta">
+            <strong>{{ c.name }}</strong>
+            <span class="type">{{ c.type }}</span>
+            <span *ngIf="c.isDefault" class="badge">Padrão</span>
+          </div>
+          <div class="ops">
+            <button (click)="startEdit(c)" [disabled]="c.isDefault">Editar</button>
+            <button (click)="remove(c)" [disabled]="c.isDefault">Excluir</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+  </main>
+
+</div>

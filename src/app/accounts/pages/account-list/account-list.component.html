@@ -28,6 +28,16 @@
         <span class="label">Metas</span>
       </a>
 
+      <a routerLink="/transactions" class="nav-item">
+        <span class="material-icons">rocket_launch</span>
+        <span class="label">Lançamentos</span>
+      </a>
+
+      <a routerLink="/categories" class="nav-item">
+        <span class="material-icons">category</span>
+        <span class="label">Categorias</span>
+      </a>
+
       <a routerLink="/profile" class="nav-item">
         <span class="material-icons">person</span>
         <span class="label">Perfil</span>
@@ -58,7 +68,7 @@
   <!-- Cards das contas -->
   <div *ngIf="!loading && accounts.length > 0" class="accounts-grid">
 
-    <div 
+    <div
       class="account-card"
       *ngFor="let acc of accounts"
       [style.boxShadow]="'0 6px 15px ' + acc.color"
@@ -67,7 +77,7 @@
       <div class="account-header">
 
         <!-- Ícone opcional definido pelo usuário -->
-        <i *ngIf="acc.icon" 
+        <i *ngIf="acc.icon"
            [class]="acc.icon"
            class="account-icon"
            [style.color]="acc.color">

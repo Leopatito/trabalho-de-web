@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -14,15 +14,33 @@ export class TransactionService {
   create(payload: {
     accountId: number;
     amount: number;
-    type: 'INCOME' | 'EXPENSE';
+    type: 'INCOME' | 'EXPENSE' | 'TRANSFER';
     description: string;
     date: Date | string;
+    categoryId?: number | null;
+    destinationAccountId?: number | null;
   }): Observable<any> {
     return this.http.post(this.apiUrl, payload);
   }
 
-  getAll(): Observable<any> {
-    return this.http.get(this.apiUrl);
+  getAll(params?: any): Observable<any> {
+    let httpParams = new HttpParams();
+    if (params) {
+      Object.keys(params).forEach(key => {
+        if (params[key] !== null && params[key] !== undefined && params[key] !== '') {
+          httpParams = httpParams.set(key, params[key]);
+        }
+      });
+    }
+    return this.http.get(this.apiUrl, { params: httpParams });
+  }
+
+  getById(id: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${id}`);
+  }
+
+  update(id: number, payload: any): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/${id}`, payload);
   }
 
   getByAccount(accountId: number): Observable<any> {

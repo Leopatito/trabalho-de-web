@@ -47,4 +47,11 @@ export const routes: Routes = [
       import('./accounts/pages/goals-page/goals-page.component')
         .then(m => m.GoalsPageComponent)
   },
+  {
+    path: 'transactions',
+    loadComponent: () =>
+      import('./transactions/pages/transactions-list.component')
+        .then(m => m.TransactionsListComponent),
+    canActivate: [AuthGuard],
+  },
 ];

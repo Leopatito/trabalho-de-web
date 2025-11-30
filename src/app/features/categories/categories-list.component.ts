@@ -1,45 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, NgForOf, NgIf } from '@angular/common';
+import { RouterModule, Router } from '@angular/router';
 import { CategoryFormComponent } from './category-form.component';
 import { CategoriesService, CategoryDto } from './categories.service';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, NgForOf, NgIf, CategoryFormComponent],
+  imports: [CommonModule, NgForOf, NgIf, CategoryFormComponent, RouterModule],
   selector: 'app-categories-list',
-  template: `
-    <div class="categories-root">
-      <h2>Gerenciar Categorias</h2>
-      <div class="actions">
-        <button (click)="newCategory()">Nova Categoria</button>
-      </div>
-
-      <div *ngIf="loading">Carregando...</div>
-      <div *ngIf="error" class="error">{{ error }}</div>
-
-      <div *ngIf="editing">
-        <h3>{{ editModel?.id ? 'Editar Categoria' : 'Criar Categoria' }}</h3>
-        <app-category-form [model]="editModel" [existing]="categories" (saved)="onSaved($event)" (cancelled)="onCancel()"></app-category-form>
-      </div>
-
-      <ul class="list">
-        <li *ngFor="let c of categories">
-          <div class="meta">
-            <strong>{{ c.name }}</strong>
-            <span class="type">{{ c.type }}</span>
-            <span *ngIf="c.isDefault" class="badge">Padrão</span>
-          </div>
-          <div class="ops">
-            <button (click)="startEdit(c)" [disabled]="c.isDefault">Editar</button>
-            <button (click)="remove(c)" [disabled]="c.isDefault">Excluir</button>
-          </div>
-        </li>
-      </ul>
-    </div>
-  `,
+  templateUrl: './categories-list.component.html',
   styleUrls: ['./categories-list.component.scss'],
 })
 export class CategoriesListComponent implements OnInit {
+  // Sidebar
+  isCollapsed: boolean = true;
+
+  // Data
   categories: CategoryDto[] = [];
   loading = false;
   error: string | null = null;
@@ -47,7 +23,7 @@ export class CategoriesListComponent implements OnInit {
   editing = false;
   editModel: CategoryDto | null = null;
 
-  constructor(private svc: CategoriesService) {}
+  constructor(private svc: CategoriesService, private router: Router) {}
 
   ngOnInit(): void {
     this.load();
@@ -66,6 +42,15 @@ export class CategoriesListComponent implements OnInit {
         this.loading = false;
       },
     });
+  }
+
+  toggleSidebar() {
+    this.isCollapsed = !this.isCollapsed;
+  }
+
+  onLogout() {
+    localStorage.removeItem('token');
+    this.router.navigate(['/login']);
   }
 
   newCategory() {

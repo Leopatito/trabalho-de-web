@@ -26,6 +26,16 @@
         <span class="label">Metas</span>
       </a>
 
+      <a routerLink="/transactions" class="nav-item">
+        <span class="material-icons">rocket_launch</span>
+        <span class="label">Lançamentos</span>
+      </a>
+
+      <a routerLink="/categories" class="nav-item">
+        <span class="material-icons">category</span>
+        <span class="label">Categorias</span>
+      </a>
+
       <a routerLink="/profile" class="nav-item">
         <span class="material-icons">person</span>
         <span class="label">Perfil</span>
@@ -98,7 +108,7 @@
         <p><strong>Progresso:</strong> {{ g.currentValue }} / {{ g.targetValue }}</p>
 
         <div class="progress-bar">
-          <div 
+          <div
             class="progress-fill"
             [ngClass]="{
                 'status-in-progress': g.status === 'EM_ANDAMENTO',
@@ -112,8 +122,8 @@
 
         <p class="status-info">
           <i class="fa-solid fa-circle-info"></i>
-          Status: 
-          <strong 
+          Status:
+          <strong
             class="status-text"
             [ngClass]="{
               'in-progress': g.status === 'EM ANDAMENTO',
@@ -138,11 +148,11 @@
           <i class="fa-solid fa-trash"></i> Excluir
         </button>
 
-      </div> 
+      </div>
 
-    </div> 
+    </div>
 
-  </div> 
+  </div>
 </div>
 
 <!-- MODAL NOVA META -->

@@ -5,6 +5,7 @@ import { GoalType } from '../../../core/models/goals.model';
 import { GoalsService } from '../../../core/services/goals.service';
 import { AccountsService } from '../../../core/services/accounts.service';
 import { TransactionService } from '../../../core/services/transaction.service';
+import { UserService } from '../../../core/services/user.service';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 
@@ -22,6 +23,8 @@ export class GoalsPageComponent implements OnInit {
   loading = false;
   error = '';
   modalOpen = false;
+  userName = '';
+  userAvatar = '';
 
   addValueModalOpen = false;
   withdrawModalOpen = false;
@@ -42,12 +45,34 @@ export class GoalsPageComponent implements OnInit {
     private goalService: GoalsService,
     private accountService: AccountsService,
     private transactionService: TransactionService,
+    private userService: UserService,
     private router: Router
   ) {}
 
   ngOnInit() {
+    this.loadUserData();
     this.loadGoals();
     this.loadAccounts();
+  }
+
+  loadUserData(): void {
+    this.userService.getMe().subscribe({
+      next: (user) => {
+        this.userName = user.name;
+        this.userAvatar = user.avatar || '';
+      },
+      error: (err) => {
+        console.error('Erro ao carregar dados do usuário', err);
+      }
+    });
+  }
+
+  navigateToProfile(): void {
+    this.router.navigate(['/profile']);
+  }
+
+  goToDashboard(): void {
+    this.router.navigate(['/dashboard']);
   }
 
   loadGoals() {

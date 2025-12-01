@@ -1,0 +1,176 @@
+<div class="profile-container" [class.sidebar-collapsed]="isCollapsed">
+  <!-- Header com ícone de dinheiro -->
+  <header class="topbar">
+    <div class="left-area" (click)="goToDashboard()" class="branding-clickable">
+      <span class="material-icons icon-money">attach_money</span>
+      <div class="brand">Finanças Pessoais</div>
+    </div>
+    <div class="right-area">
+      <div class="user-avatar">
+        <img [src]="userAvatar || 'https://via.placeholder.com/40'"
+             [alt]="userName || 'Usuário'"
+             class="avatar-img">
+      </div>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <nav class="sidebar" [class.collapsed]="isCollapsed">
+    <div class="sidebar-content">
+      <button class="toggle-btn" (click)="toggleSidebar()">
+        <span class="material-icons">{{ isCollapsed ? 'menu' : 'close' }}</span>
+      </button>
+
+      <a routerLink="/dashboard" class="nav-item">
+        <span class="material-icons">home</span>
+        <span class="label">Dashboard</span>
+      </a>
+
+      <a routerLink="/accounts" class="nav-item">
+        <span class="material-icons">account_balance_wallet</span>
+        <span class="label">Minhas Contas</span>
+      </a>
+
+      <a routerLink="/goals" class="nav-item">
+        <span class="material-icons">receipt_long</span>
+        <span class="label">Metas</span>
+      </a>
+
+      <a routerLink="/transactions" class="nav-item">
+        <span class="material-icons">rocket_launch</span>
+        <span class="label">Lançamentos</span>
+      </a>
+
+      <a routerLink="/categories" class="nav-item">
+        <span class="material-icons">category</span>
+        <span class="label">Categorias</span>
+      </a>
+
+      <a routerLink="/profile" class="nav-item active">
+        <span class="material-icons">person</span>
+        <span class="label">Perfil</span>
+      </a>
+
+      <button class="nav-item logout" (click)="onLogout()">
+        <span class="material-icons">logout</span>
+        <span class="label">Sair</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="profile-content">
+    <div class="page-header">
+      <h1>Meu Perfil</h1>
+    </div>
+
+    <div *ngIf="loading" class="loading">
+      Carregando perfil...
+    </div>
+
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+    </div>
+
+    <div *ngIf="!loading" class="profile-card">
+      <div class="profile-content-wrapper">
+        <!-- Avatar Section -->
+        <div class="avatar-section">
+          <div class="avatar-large">
+            <img [src]="userAvatar || getDefaultAvatar()"
+                 [alt]="userName || 'Usuário'"
+                 class="avatar-img-large">
+          </div>
+        </div>
+
+        <!-- Edit Options Sidebar -->
+        <div class="edit-options">
+          <h3>O que deseja editar?</h3>
+          <div class="option-item">
+            <input type="checkbox" id="edit-name" [(ngModel)]="editOptions.name" name="editName">
+            <label for="edit-name">
+              <span class="material-icons">edit</span>
+              Nome do Perfil
+            </label>
+          </div>
+          <div class="option-item">
+            <input type="checkbox" id="edit-avatar" [(ngModel)]="editOptions.avatar" name="editAvatar">
+            <label for="edit-avatar">
+              <span class="material-icons">image</span>
+              Avatar
+            </label>
+          </div>
+          <div class="option-item">
+            <input type="checkbox" id="edit-currency" [(ngModel)]="editOptions.currency" name="editCurrency">
+            <label for="edit-currency">
+              <span class="material-icons">currency_exchange</span>
+              Moeda
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Form -->
+      <form class="profile-form" (ngSubmit)="saveChanges()">
+        <!-- Nome -->
+        <div class="form-section" *ngIf="editOptions.name">
+          <h3>Nome do Perfil</h3>
+          <div class="form-group">
+            <label>Nome</label>
+            <input type="text" [(ngModel)]="formData.name" name="name" required>
+          </div>
+          <button type="button" class="btn-save-partial" (click)="saveNameOnly()" [disabled]="formData.name === getOriginalData().name || !formData.name?.trim()">
+            Atualizar Nome
+          </button>
+        </div>
+
+        <!-- Avatar -->
+        <div class="form-section" *ngIf="editOptions.avatar">
+          <h3>Avatar</h3>
+          <div class="form-group">
+            <label>URL do Avatar</label>
+            <input type="url" [(ngModel)]="formData.avatar" name="avatar" placeholder="https://exemplo.com/avatar.jpg">
+            <small>Cole a URL da sua imagem de perfil</small>
+          </div>
+          <button type="button" class="btn-save-partial" (click)="saveAvatarOnly()" [disabled]="formData.avatar === getOriginalData().avatar">
+            Atualizar Avatar
+          </button>
+        </div>
+
+        <!-- E-mail (somente leitura) -->
+        <div class="form-section">
+          <h3>Informações Gerais</h3>
+          <div class="form-group">
+            <label>E-mail</label>
+            <input type="email" [(ngModel)]="formData.email" name="email" disabled>
+            <small>O e-mail não pode ser alterado</small>
+          </div>
+
+          <div class="form-group" *ngIf="editOptions.currency">
+            <label>Moeda</label>
+            <select [(ngModel)]="formData.currency" name="currency">
+              <option value="BRL">Real (BRL)</option>
+              <option value="USD">Dólar (USD)</option>
+              <option value="EUR">Euro (EUR)</option>
+              <option value="GBP">Libra (GBP)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Ações gerais -->
+        <div class="form-actions">
+          <button type="submit" class="btn-save" [disabled]="!hasChanges">
+            Salvar Todas as Alterações
+          </button>
+          <button type="button" class="btn-cancel" (click)="resetForm()">
+            Cancelar
+          </button>
+        </div>
+      </form>
+
+      <div *ngIf="successMessage" class="success-message">
+        {{ successMessage }}
+      </div>
+    </div>
+  </main>
+</div>

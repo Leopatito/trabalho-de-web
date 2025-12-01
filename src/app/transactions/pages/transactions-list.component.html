@@ -2,8 +2,17 @@
 
   <!-- Header -->
   <header class="topbar">
-    <div class="left-area">
+    <div class="left-area" (click)="goToDashboard()" class="branding-clickable">
+      <span class="material-icons icon-money">attach_money</span>
       <div class="brand">Finanças Pessoais</div>
+    </div>
+    <div class="right-area">
+      <div class="user-avatar">
+        <img [src]="userAvatar || 'https://via.placeholder.com/40'"
+             [alt]="userName || 'Usuário'"
+             class="avatar-img"
+             (click)="navigateToProfile()">
+      </div>
     </div>
   </header>
 
@@ -82,6 +91,14 @@
       </div>
 
       <div class="filter-group">
+        <label>Categoria</label>
+        <select [(ngModel)]="selectedCategoryId" (change)="onFilterChange()">
+          <option [value]="null">Todas</option>
+          <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
         <label>Data Início</label>
         <input type="date" [(ngModel)]="startDate" (change)="onFilterChange()">
       </div>
@@ -116,17 +133,17 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let tx of paginatedTransactions" [class]="'type-' + getTypeClass(tx.type)">
+          <tr *ngFor="let tx of paginatedTransactions" [class]="'type-' + getTypeClass(formatTransactionType(tx.type))">
             <td>{{ tx.date | date:'dd/MM/yyyy' }}</td>
             <td>{{ tx.description }}</td>
             <td>{{ tx.category?.name || '-' }}</td>
             <td>{{ tx.account?.name || '-' }}</td>
-            <td [class.negative]="tx.type === 'EXPENSE'">
-              {{ tx.type === 'EXPENSE' ? '-' : '+' }} {{ tx.amount | number:'1.2-2' }}
+            <td [class.negative]="formatTransactionType(tx.type) === 'EXPENSE'">
+              {{ formatTransactionType(tx.type) === 'EXPENSE' ? '-' : '+' }} {{ Math.abs(tx.amount) | number:'1.2-2' }}
             </td>
             <td>
-              <span [class]="'badge badge-' + getTypeClass(tx.type)">
-                {{ getTypeLabel(tx.type) }}
+              <span [class]="'badge badge-' + getTypeClass(formatTransactionType(tx.type))">
+                {{ getTypeLabel(formatTransactionType(tx.type)) }}
               </span>
             </td>
             <td>

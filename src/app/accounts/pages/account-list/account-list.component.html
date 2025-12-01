@@ -1,8 +1,17 @@
 <div class="account-list-container">
 
   <header class="topbar">
-    <div class="left-area">
+    <div class="left-area" (click)="goToDashboard()" class="branding-clickable">
+      <span class="material-icons icon-money">attach_money</span>
       <div class="brand">Finanças Pessoais</div>
+    </div>
+    <div class="right-area">
+      <div class="user-avatar">
+        <img [src]="userAvatar || 'https://via.placeholder.com/40'"
+             [alt]="userName || 'Usuário'"
+             class="avatar-img"
+             (click)="navigateToProfile()">
+      </div>
     </div>
   </header>
 

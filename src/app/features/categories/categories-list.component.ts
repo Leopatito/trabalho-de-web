@@ -3,6 +3,7 @@ import { CommonModule, NgForOf, NgIf } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { CategoryFormComponent } from './category-form.component';
 import { CategoriesService, CategoryDto } from './categories.service';
+import { UserService } from '../../core/services/user.service';
 
 @Component({
   standalone: true,
@@ -15,6 +16,10 @@ export class CategoriesListComponent implements OnInit {
   // Sidebar
   isCollapsed: boolean = true;
 
+  // User
+  userName = '';
+  userAvatar = '';
+
   // Data
   categories: CategoryDto[] = [];
   loading = false;
@@ -23,10 +28,31 @@ export class CategoriesListComponent implements OnInit {
   editing = false;
   editModel: CategoryDto | null = null;
 
-  constructor(private svc: CategoriesService, private router: Router) {}
+  constructor(private svc: CategoriesService, private userService: UserService, private router: Router) {}
 
   ngOnInit(): void {
+    this.loadUserData();
     this.load();
+  }
+
+  loadUserData(): void {
+    this.userService.getMe().subscribe({
+      next: (user) => {
+        this.userName = user.name;
+        this.userAvatar = user.avatar || '';
+      },
+      error: (err) => {
+        console.error('Erro ao carregar dados do usuário', err);
+      }
+    });
+  }
+
+  navigateToProfile(): void {
+    this.router.navigate(['/profile']);
+  }
+
+  goToDashboard(): void {
+    this.router.navigate(['/dashboard']);
   }
 
   load() {

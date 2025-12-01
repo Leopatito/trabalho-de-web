@@ -5,6 +5,7 @@ import { RouterModule, Router } from '@angular/router';
 import { TransactionService } from '../../core/services/transaction.service';
 import { AccountsService } from '../../core/services/accounts.service';
 import { CategoriesService } from '../../features/categories/categories.service';
+import { UserService } from '../../core/services/user.service';
 
 @Component({
   selector: 'app-transactions-list',
@@ -16,6 +17,10 @@ import { CategoriesService } from '../../features/categories/categories.service'
 export class TransactionsListComponent implements OnInit {
   // Sidebar
   isCollapsed: boolean = true;
+
+  // User
+  userName = '';
+  userAvatar = '';
 
   // Data
   transactions: any[] = [];
@@ -51,17 +56,42 @@ export class TransactionsListComponent implements OnInit {
   pageSize = 10;
   totalItems = 0;
 
+  // Utility
+  Math = Math;
+
   constructor(
     private transactionService: TransactionService,
     private accountsService: AccountsService,
     private categoriesService: CategoriesService,
+    private userService: UserService,
     private router: Router
   ) {}
 
   ngOnInit() {
+    this.loadUserData();
     this.loadAccounts();
     this.loadCategories();
     this.loadTransactions();
+  }
+
+  loadUserData(): void {
+    this.userService.getMe().subscribe({
+      next: (user) => {
+        this.userName = user.name;
+        this.userAvatar = user.avatar || '';
+      },
+      error: (err) => {
+        console.error('Erro ao carregar dados do usuário', err);
+      }
+    });
+  }
+
+  navigateToProfile(): void {
+    this.router.navigate(['/profile']);
+  }
+
+  goToDashboard(): void {
+    this.router.navigate(['/dashboard']);
   }
 
   loadAccounts() {
@@ -184,6 +214,7 @@ export class TransactionsListComponent implements OnInit {
       // Atualizar
       this.transactionService.update(this.editingTransaction.id, payload).subscribe({
         next: () => {
+          this.updateAccountBalances();
           this.loadTransactions();
           this.closeModal();
         },
@@ -196,6 +227,7 @@ export class TransactionsListComponent implements OnInit {
       // Criar novo
       this.transactionService.create(payload).subscribe({
         next: () => {
+          this.updateAccountBalances();
           this.loadTransactions();
           this.closeModal();
         },
@@ -205,6 +237,11 @@ export class TransactionsListComponent implements OnInit {
         }
       });
     }
+  }
+
+  updateAccountBalances() {
+    // Recarregar contas para atualizar saldos
+    this.loadAccounts();
   }
 
   deleteTransaction(id: number) {
@@ -219,6 +256,12 @@ export class TransactionsListComponent implements OnInit {
         this.error = 'Erro ao excluir lançamento';
       }
     });
+  }
+
+  formatTransactionType(type: string): string {
+    // Converter tipos vindos do backend para o padrão esperado
+    if (type === 'transaction' || !type) return 'EXPENSE';
+    return type;
   }
 
   getTypeLabel(type: string): string {

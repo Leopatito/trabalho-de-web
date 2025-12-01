@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountsService } from '../../../core/services/accounts.service';
+import { UserService } from '../../../core/services/user.service';
 import { Router } from '@angular/router';
 import { CommonModule, CurrencyPipe, NgForOf, NgIf } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -10,7 +11,7 @@ import { RouterModule } from '@angular/router';
   templateUrl: './account-list.component.html',
   styleUrls: ['./account-list.component.scss'],
   imports: [
-    CommonModule,   
+    CommonModule,
     NgIf,
     NgForOf,
     CurrencyPipe,
@@ -21,14 +22,38 @@ export class AccountsListComponent implements OnInit {
   isCollapsed: boolean = true;
   accounts: any[] = [];
   loading = true;
+  userName = '';
+  userAvatar = '';
 
   constructor(
     private accountsService: AccountsService,
+    private userService: UserService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
+    this.loadUserData();
     this.loadAccounts();
+  }
+
+  loadUserData(): void {
+    this.userService.getMe().subscribe({
+      next: (user) => {
+        this.userName = user.name;
+        this.userAvatar = user.avatar || '';
+      },
+      error: (err) => {
+        console.error('Erro ao carregar dados do usuário', err);
+      }
+    });
+  }
+
+  navigateToProfile(): void {
+    this.router.navigate(['/profile']);
+  }
+
+  goToDashboard(): void {
+    this.router.navigate(['/dashboard']);
   }
 
   // 🔥 ADICIONE A FUNÇÃO AQUI DENTRO DA CLASSE AccountsListComponent
@@ -36,10 +61,10 @@ export class AccountsListComponent implements OnInit {
     const typeMap: { [key: string]: string } = {
       'CHECKING': 'Conta Corrente',
       'SAVINGS': 'Conta Poupança',
-      'LOAN': 'Conta de Investimento', 
+      'LOAN': 'Conta de Investimento',
       'OTHER': 'Outro'
     };
-    
+
     return typeMap[type] || type;
   }
 
@@ -59,7 +84,7 @@ export class AccountsListComponent implements OnInit {
       next: (response) => {
         this.accounts = response.items || [];
         this.loading = false;
-        
+
         // Debug para verificar os dados
         console.log('Contas carregadas:', this.accounts);
       },

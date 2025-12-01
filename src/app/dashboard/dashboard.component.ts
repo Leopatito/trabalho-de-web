@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartOptions } from 'chart.js';
 import { DashboardService } from './dashboard.service';
 import { AuthService } from '../core/services/AuthService.service';
-import { Router } from '@angular/router';
+import { UserService } from '../core/services/user.service';
 import { forkJoin, of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 export * from './dashboard.service';
@@ -21,6 +21,8 @@ export * from './dashboard.component';
 })
 export class DashboardComponent implements OnInit {
   isCollapsed: boolean = true;
+  userName = '';
+  userAvatar = '';
 
   toggleSidebar() {
     this.isCollapsed = !this.isCollapsed;
@@ -61,7 +63,7 @@ export class DashboardComponent implements OnInit {
   loading = false;
   error: string | null = null;
 
-  constructor(private dashboard: DashboardService, private authService: AuthService, private router: Router) {}
+  constructor(private dashboard: DashboardService, private authService: AuthService, private userService: UserService, private router: Router) {}
 
   onLogout() {
     try {
@@ -73,7 +75,29 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
+  loadUserData(): void {
+    this.userService.getMe().subscribe({
+      next: (user) => {
+        this.userName = user.name;
+        this.userAvatar = user.avatar || '';
+      },
+      error: (err) => {
+        console.error('Erro ao carregar dados do usuário', err);
+      }
+    });
+  }
+
+  navigateToProfile(): void {
+    this.router.navigate(['/profile']);
+  }
+
+  goToDashboard(): void {
+    // Já estamos no dashboard, mas a função pode ser útil para reload se necessário
+    this.router.navigate(['/dashboard']);
+  }
+
   ngOnInit(): void {
+    this.loadUserData();
     this.loadAccounts();
     // Overview (cards + monthly chart) always shows last 6 months
     this.loadOverviewData();

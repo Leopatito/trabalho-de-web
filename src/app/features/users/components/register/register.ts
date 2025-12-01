@@ -16,6 +16,7 @@ import { User } from '../../../../shared/models/User.models';
 export class Register {
   name = '';
   email = '';
+  avatar = '';
   password = '';
   confirmPassword = '';
   loading = false;
@@ -59,6 +60,7 @@ export class Register {
       name: this.name.trim(),
       email: this.email.trim(),
       password: this.password,
+      avatar: this.avatar.trim() || undefined
     };
 
     this.authService.register(payload).subscribe({
